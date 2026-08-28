@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RepoAura Browser Test</title>
+    <style>
+      :root {
+        font-family: system-ui, sans-serif;
+        color: #17202a;
+        background: #f2f5f8;
+      }
+      body {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 72px 24px;
+      }
+      main {
+        padding: 36px;
+        background: #fff;
+        border: 1px solid #d9e0e7;
+        border-radius: 18px;
+        box-shadow: 0 20px 50px rgba(33, 50, 70, 0.08);
+      }
+      h1 {
+        margin-top: 0;
+        letter-spacing: -0.025em;
+      }
+      li {
+        margin: 20px 0;
+      }
+      a {
+        color: #0969da;
+        font-weight: 650;
+      }
+      .spacer {
+        height: 500px;
+      }
+      .google-inverted-result {
+        display: flex;
+        flex-direction: column;
+        transform: rotate(180deg);
+      }
+      .google-inverted-result > a > div {
+        transform: rotate(180deg);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Repositories worth a look</h1>
+      <p>Repository-root links receive inline summaries. Use each info button for details.</p>
+      <ul>
+        <li><a id="wxt-link" href="https://github.com/wxt-dev/wxt">WXT</a></li>
+        <li><a id="linux-link" href="https://github.com/torvalds/linux">Linux</a></li>
+        <li><a id="file-link" href="https://github.com/wxt-dev/wxt/blob/main/package.json">WXT package file (no preview)</a></li>
+        <li><a id="invalid-link" href="https://github.com/topics/browser-extension">GitHub topic (no preview)</a></li>
+        <li><a id="image-link" href="https://github.com/wxt-dev/wxt"><img alt="WXT logo" width="24" height="24" /></a> (image-only link: no summary)</li>
+        <li><a id="google-style-link" href="https://github.com/wxt-dev/wxt"><div><strong>WXT on GitHub</strong><span>Modern web extension tooling</span></div></a></li>
+        <li class="google-inverted-result"><a id="google-inverted-link" href="https://github.com/D4Vinci/Scrapling"><div><strong>Scrapling on GitHub</strong><span>Adaptive web scraping</span></div></a></li>
+        <li><a id="mutable-link" href="https://github.com/wxt-dev/wxt/issues">Mutable link starts ineligible</a></li>
+      </ul>
+      <div class="spacer"></div>
+      <a id="bottom-link" href="https://github.com/oven-sh/bun">Bun near the viewport edge</a>
+    </main>
+  </body>
+</html>

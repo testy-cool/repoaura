@@ -1,0 +1,18 @@
+[Unit]
+Description=RepoAura PocketBase archive
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=%h/.local/lib/repoaura-pocketbase/pocketbase serve --automigrate=false --http=127.0.0.1:8091 --dir=%h/.local/share/repoaura-pocketbase/pb_data --migrationsDir=%h/.local/lib/repoaura-pocketbase/pb_migrations
+Restart=on-failure
+RestartSec=5s
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=%h/.local/share/repoaura-pocketbase
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,44 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+
+test('uses the preceding DOM slot when a transformed layout paints the companion above its link', async () => {
+  const layout = await import('../lib/companion-layout.ts');
+
+  assert.equal(layout.getCompanionDomPosition(
+    { top: 200, bottom: 240 },
+    { top: 150, bottom: 170 },
+  ), 'before');
+  assert.equal(layout.getCompanionDomPosition(
+    { top: 200, bottom: 240 },
+    { top: 245, bottom: 265 },
+  ), 'after');
+});
+
+test('copies only a real counter-transform', async () => {
+  const layout = await import('../lib/companion-layout.ts');
+
+  assert.equal(layout.normalizeCounterTransform('matrix(-1, 0, 0, -1, 0, 0)'), 'matrix(-1, 0, 0, -1, 0, 0)');
+  assert.equal(layout.normalizeCounterTransform('matrix(1, 0, 0, 1, 12, 8)'), null);
+  assert.equal(layout.normalizeCounterTransform('none'), null);
+  assert.equal(layout.normalizeCounterTransform('  '), null);
+});
+
+test('stacks summaries for standalone result links while keeping prose compact', async () => {
+  const layout = await import('../lib/companion-layout.ts');
+
+  assert.equal(layout.getCompanionPresentation({
+    anchorDisplay: 'block',
+    anchorWidth: 320,
+    parentWidth: 640,
+  }), 'stacked');
+  assert.equal(layout.getCompanionPresentation({
+    anchorDisplay: 'inline',
+    anchorWidth: 280,
+    parentWidth: 360,
+  }), 'stacked');
+  assert.equal(layout.getCompanionPresentation({
+    anchorDisplay: 'inline',
+    anchorWidth: 120,
+    parentWidth: 640,
+  }), 'compact');
+});
