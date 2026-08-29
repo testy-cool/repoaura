@@ -19,6 +19,10 @@
   font: inherit !important;
 }
 
+html, body {
+  display: contents !important;
+}
+
 *, *::before, *::after { box-sizing: border-box; }
 [hidden] { display: none !important; }
 button, a { font: inherit; }
@@ -33,7 +37,7 @@ button, a { font: inherit; }
   font-size: 12px;
   font-weight: 500;
   line-height: 1.35;
-  white-space: normal;
+  white-space: nowrap;
 }
 
 .lens-inline[data-presentation="stacked"] {
@@ -47,7 +51,7 @@ button, a { font: inherit; }
 
 .lens-inline-state, .lens-inline-content {
   display: inline-flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: baseline;
   gap: 4px;
 }
@@ -59,12 +63,12 @@ button, a { font: inherit; }
 
 .inline-activity {
   margin-inline-start: 2px;
-  padding: 1px 5px;
+  padding: 0;
   color: var(--secondary);
-  background: var(--elevated);
-  border-radius: 999px;
-  font-size: 10px;
-  font-weight: 650;
+  background: none;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
 }
 .inline-activity[data-level="active"] { color: var(--green); }
 .inline-activity[data-level="quiet"] { color: var(--orange); }

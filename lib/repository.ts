@@ -29,8 +29,19 @@ export interface FormattedInlineSummary {
   stars: string;
   starsLabel: string;
   activity: ActivitySignal;
+  activityIcon: string;
+  activityLabel: string;
   lastPush: string;
+  lastPushLabel: string;
 }
+
+const ACTIVITY_ICONS: Record<ActivityLevel, string> = {
+  active: '●',
+  quiet: '◐',
+  dormant: '○',
+  archived: '□',
+  unavailable: '×',
+};
 
 const RESERVED_OWNERS = new Set([
   'about',
@@ -162,18 +173,27 @@ export function formatInlineSummary(
   now = Date.now(),
 ): FormattedInlineSummary {
   const stars = formatCompactNumber(summary.stars);
+  const activity = getActivitySignal(summary.pushedAt, {
+    archived: summary.archived,
+    disabled: summary.disabled,
+    now,
+  });
+  const relativePush = summary.pushedAt && Number.isFinite(Date.parse(summary.pushedAt))
+    ? formatRelativeDate(summary.pushedAt, now)
+    : null;
   return {
     stars: `★ ${stars}`,
     starsLabel: `${stars} stars`,
-    activity: getActivitySignal(summary.pushedAt, {
-      archived: summary.archived,
-      disabled: summary.disabled,
-      now,
-    }),
-    lastPush: summary.pushedAt && Number.isFinite(Date.parse(summary.pushedAt))
-      ? `last push ${formatRelativeDate(summary.pushedAt, now)}`
-      : 'last push —',
+    activity,
+    activityIcon: ACTIVITY_ICONS[activity.level],
+    activityLabel: `${activity.label} — ${activity.detail}`,
+    lastPush: relativePush ? compactRelativeDate(relativePush) : '—',
+    lastPushLabel: relativePush ? `Last push ${relativePush}` : 'Last push unavailable',
   };
+}
+
+function compactRelativeDate(value: string): string {
+  return value === 'just now' ? 'now' : value.replace(/ ago$/, '');
 }
 
 export function getLatestIssueTimestamp(

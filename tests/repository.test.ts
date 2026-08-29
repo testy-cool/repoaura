@@ -119,7 +119,7 @@ test('classifies repository activity with archived and disabled overrides', () =
   assert.equal(getActivitySignal('2026-07-20T12:00:00Z', { now, disabled: true }).level, 'unavailable');
 });
 
-test('formats inline summaries with all visible activity states and last-push wording', () => {
+test('formats compact inline summaries with distinct activity symbols and explicit labels', () => {
   const now = Date.parse('2026-07-31T12:00:00Z');
   const base = {
     stars: 1_250,
@@ -130,11 +130,11 @@ test('formats inline summaries with all visible activity states and last-push wo
     disabled: false,
   };
 
-  assert.equal(formatInlineSummary(base, now).activity.label, 'Active');
-  assert.equal(formatInlineSummary({ ...base, pushedAt: '2026-04-20T12:00:00Z' }, now).activity.label, 'Quiet');
-  assert.equal(formatInlineSummary({ ...base, pushedAt: '2025-01-01T12:00:00Z' }, now).activity.label, 'Dormant');
-  assert.equal(formatInlineSummary({ ...base, archived: true }, now).activity.label, 'Archived');
-  assert.equal(formatInlineSummary({ ...base, disabled: true }, now).activity.label, 'Unavailable');
+  assert.equal(formatInlineSummary(base, now).activityIcon, '●');
+  assert.equal(formatInlineSummary({ ...base, pushedAt: '2026-04-20T12:00:00Z' }, now).activityIcon, '◐');
+  assert.equal(formatInlineSummary({ ...base, pushedAt: '2025-01-01T12:00:00Z' }, now).activityIcon, '○');
+  assert.equal(formatInlineSummary({ ...base, archived: true }, now).activityIcon, '□');
+  assert.equal(formatInlineSummary({ ...base, disabled: true }, now).activityIcon, '×');
 
   const formatted = formatInlineSummary(base, now);
   assert.deepEqual(formatted, {
@@ -145,7 +145,10 @@ test('formats inline summaries with all visible activity states and last-push wo
       label: 'Active',
       detail: 'Pushed within 30 days',
     },
-    lastPush: 'last push 4d ago',
+    activityIcon: '●',
+    activityLabel: 'Active — Pushed within 30 days',
+    lastPush: '4d',
+    lastPushLabel: 'Last push 4d ago',
   });
   assert.doesNotMatch(Object.values(formatted).join(' '), /Updated/i);
 });
@@ -163,5 +166,8 @@ test('formats partial inline summaries with explicit unknown values', () => {
   assert.equal(formatted.stars, '★ —');
   assert.equal(formatted.starsLabel, '— stars');
   assert.equal(formatted.activity.label, 'Unavailable');
-  assert.equal(formatted.lastPush, 'last push —');
+  assert.equal(formatted.activityIcon, '×');
+  assert.equal(formatted.activityLabel, 'Unavailable — Push date unavailable');
+  assert.equal(formatted.lastPush, '—');
+  assert.equal(formatted.lastPushLabel, 'Last push unavailable');
 });

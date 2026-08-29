@@ -293,7 +293,7 @@ export default defineContentScript({
         name: `repoaura-inline-${++companionSequence}`,
         position: 'inline',
         anchor,
-        append: 'after',
+        append: (anchor, host) => anchor.after(host),
         isolateEvents: ['click', 'pointerdown', 'pointerup', 'keydown', 'keyup', 'keypress'],
         onMount(container, _shadow, shadowHost) {
           shadowHost.style.setProperty('display', 'inline', 'important');
@@ -595,16 +595,20 @@ function renderSummary(
 ): void {
   const summary = formatInlineSummary(repository);
   elements.summaryStars.textContent = summary.stars;
-  elements.summaryActivity.textContent = summary.activity.label;
+  elements.summaryStars.title = repository.stars == null
+    ? 'Stars unavailable'
+    : `${repository.stars.toLocaleString()} stars`;
+  elements.summaryActivity.textContent = summary.activityIcon;
   elements.summaryActivity.dataset.level = summary.activity.level;
-  elements.summaryActivity.title = summary.activity.detail;
+  elements.summaryActivity.title = summary.activityLabel;
   elements.summaryLastPush.textContent = summary.lastPush;
+  elements.summaryLastPush.title = summary.lastPushLabel;
   const selected = new Set(inlineFields);
   const labels = [
     repository.fullName,
     selected.has('stars') ? summary.starsLabel : '',
     selected.has('activity') ? summary.activity.label : '',
-    selected.has('lastPush') ? summary.lastPush : '',
+    selected.has('lastPush') ? summary.lastPushLabel : '',
     formatPreviewFreshness(repository.fetchedAt),
   ].filter(Boolean);
   elements.summaryState.setAttribute('aria-label', labels.join(', '));

@@ -8,12 +8,12 @@ default line answered the useful questions at a glance:
 
 ```text
 Pydantic AI Harness
-  ★ 828  Active  last push 1h ago  ⓘ
+  ★ 828  ●  1h  ⓘ
 ```
 
 Click the info button for the description, issue dates, contributors, language,
 license, topics, forks, watchers, and freshness. Hovering and focusing never
-open the card.
+open the card. Hover the compact values to read their explicit labels.
 
 ## What you get
 
@@ -57,11 +57,11 @@ be analyzed.
 
 | Status | Meaning |
 |---|---|
-| **Active** | Pushed within the last 30 days |
-| **Quiet** | No push in the last 30 days |
-| **Dormant** | No push in the last six months |
-| **Archived** | GitHub reports the repository as archived |
-| **Unavailable** | GitHub reports the repository as disabled or no push date is available |
+| **● Active** | Pushed within the last 30 days |
+| **◐ Quiet** | No push in the last 30 days |
+| **○ Dormant** | No push in the last six months |
+| **□ Archived** | GitHub reports the repository as archived |
+| **× Unavailable** | GitHub reports the repository as disabled or no push date is available |
 
 Status always comes from the repository's last push. Issue creation and closure
 dates remain separate, and RepoAura labels its own observation time as

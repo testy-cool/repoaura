@@ -12,6 +12,39 @@ test('inline summaries inherit the page font while detail cards keep a system fo
   assert.match(popoverRule, /font-family:/);
 });
 
+test('compact summaries stay atomic instead of wrapping into narrow columns', async () => {
+  const css = await readFile(new URL('../styles/content.css', import.meta.url), 'utf8');
+  const inlineRule = css.match(/\.lens-inline\s*\{([^}]*)\}/)?.[1] ?? '';
+  const contentRule = css.match(/\.lens-inline-state,\s*\.lens-inline-content\s*\{([^}]*)\}/)?.[1] ?? '';
+
+  assert.match(inlineRule, /white-space:\s*nowrap/);
+  assert.match(contentRule, /flex-wrap:\s*nowrap/);
+});
+
+test('shadow document wrappers do not split surrounding prose into block boxes', async () => {
+  const css = await readFile(new URL('../styles/content.css', import.meta.url), 'utf8');
+  const wrapperRule = css.match(/html,\s*body\s*\{([^}]*)\}/)?.[1] ?? '';
+
+  assert.match(wrapperRule, /display:\s*contents\s*!important/);
+});
+
+test('companions are inserted directly after anchors without skipping text nodes', async () => {
+  const content = await readFile(new URL('../entrypoints/content.ts', import.meta.url), 'utf8');
+
+  assert.doesNotMatch(content, /append:\s*'after'/);
+  assert.match(content, /append:\s*\(anchor,\s*host\)\s*=>\s*anchor\.after\(host\)/);
+});
+
+test('inline symbols retain explicit hover and accessible labels', async () => {
+  const content = await readFile(new URL('../entrypoints/content.ts', import.meta.url), 'utf8');
+
+  assert.match(content, /summaryActivity\.title\s*=\s*summary\.activityLabel/);
+  assert.match(content, /summaryLastPush\.title\s*=\s*summary\.lastPushLabel/);
+  assert.match(content, /summaryStars\.title\s*=/);
+  assert.match(content, /selected\.has\('activity'\)\s*\?\s*summary\.activity\.label/);
+  assert.match(content, /selected\.has\('lastPush'\)\s*\?\s*summary\.lastPushLabel/);
+});
+
 test('inline markup omits issue metrics while the detail card retains them', async () => {
   const content = await readFile(new URL('../entrypoints/content.ts', import.meta.url), 'utf8');
 
