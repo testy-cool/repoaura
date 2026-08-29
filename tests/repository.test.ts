@@ -131,7 +131,7 @@ test('formats compact inline summaries with distinct activity symbols and explic
   };
 
   assert.equal(formatInlineSummary(base, now).activityIcon, '●');
-  assert.equal(formatInlineSummary({ ...base, pushedAt: '2026-04-20T12:00:00Z' }, now).activityIcon, '◐');
+  assert.equal(formatInlineSummary({ ...base, pushedAt: '2026-04-20T12:00:00Z' }, now).activityIcon, '◉');
   assert.equal(formatInlineSummary({ ...base, pushedAt: '2025-01-01T12:00:00Z' }, now).activityIcon, '○');
   assert.equal(formatInlineSummary({ ...base, archived: true }, now).activityIcon, '□');
   assert.equal(formatInlineSummary({ ...base, disabled: true }, now).activityIcon, '×');

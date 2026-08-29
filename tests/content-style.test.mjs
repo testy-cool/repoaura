@@ -21,6 +21,24 @@ test('compact summaries stay atomic instead of wrapping into narrow columns', as
   assert.match(contentRule, /flex-wrap:\s*nowrap/);
 });
 
+test('info circle stays visually compact without shrinking its pointer target', async () => {
+  const css = await readFile(new URL('../styles/content.css', import.meta.url), 'utf8');
+  const infoRule = css.match(/\.lens-info\s*\{([^}]*)\}/)?.[1] ?? '';
+  const hitAreaRule = css.match(/\.lens-info::before\s*\{([^}]*)\}/)?.[1] ?? '';
+
+  assert.match(infoRule, /width:\s*20px/);
+  assert.match(infoRule, /height:\s*20px/);
+  assert.match(infoRule, /flex:\s*0\s+0\s+20px/);
+  assert.match(infoRule, /border:\s*0/);
+  assert.match(infoRule, /background:\s*none/);
+  assert.match(infoRule, /isolation:\s*isolate/);
+  assert.match(infoRule, /font:\s*700\s+9px\/1/);
+  assert.match(hitAreaRule, /inset:\s*2px/);
+  assert.match(hitAreaRule, /border:\s*1px\s+solid\s+var\(--border\)/);
+  assert.match(hitAreaRule, /background:\s*var\(--surface\)/);
+  assert.match(hitAreaRule, /z-index:\s*-1/);
+});
+
 test('shadow document wrappers do not split surrounding prose into block boxes', async () => {
   const css = await readFile(new URL('../styles/content.css', import.meta.url), 'utf8');
   const wrapperRule = css.match(/html,\s*body\s*\{([^}]*)\}/)?.[1] ?? '';

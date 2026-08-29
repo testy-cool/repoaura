@@ -37,7 +37,7 @@ export interface FormattedInlineSummary {
 
 const ACTIVITY_ICONS: Record<ActivityLevel, string> = {
   active: '●',
-  quiet: '◐',
+  quiet: '◉',
   dormant: '○',
   archived: '□',
   unavailable: '×',
