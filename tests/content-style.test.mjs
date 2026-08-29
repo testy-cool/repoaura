@@ -32,8 +32,8 @@ test('info circle stays visually compact without shrinking its pointer target', 
   assert.match(infoRule, /border:\s*0/);
   assert.match(infoRule, /background:\s*none/);
   assert.match(infoRule, /isolation:\s*isolate/);
-  assert.match(infoRule, /font:\s*700\s+9px\/1/);
-  assert.match(hitAreaRule, /inset:\s*2px/);
+  assert.match(infoRule, /font:\s*700\s+8px\/1/);
+  assert.match(hitAreaRule, /inset:\s*3px/);
   assert.match(hitAreaRule, /border:\s*1px\s+solid\s+var\(--border\)/);
   assert.match(hitAreaRule, /background:\s*var\(--surface\)/);
   assert.match(hitAreaRule, /z-index:\s*-1/);
