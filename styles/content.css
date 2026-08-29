@@ -85,10 +85,11 @@ button, a { font: inherit; }
 .lens-info {
   position: relative;
   display: inline-grid;
-  width: 20px;
-  height: 20px;
-  flex: 0 0 20px;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 14px;
   place-items: center;
+  align-self: center;
   padding: 0;
   border: 0;
   background: none;
@@ -98,12 +99,17 @@ button, a { font: inherit; }
 }
 .lens-info::before {
   position: absolute;
-  inset: 3px;
+  inset: 0;
   content: "";
   border: 1px solid var(--border);
   background: var(--surface);
   border-radius: 50%;
   z-index: -1;
+}
+.lens-info::after {
+  position: absolute;
+  inset: -3px;
+  content: "";
 }
 .lens-info:hover, .lens-info:focus-visible, .lens-retry:hover, .lens-retry:focus-visible {
   color: var(--blue);
