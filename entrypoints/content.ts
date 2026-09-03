@@ -11,7 +11,11 @@ import {
   selectPreferredRepositoryAnchors,
   type RepositoryAnchorCandidate,
 } from '@/lib/anchor-selection';
-import { getCompanionPresentation } from '@/lib/companion-layout';
+import {
+  getCompanionDomPosition,
+  getCompanionPresentation,
+  normalizeCounterTransform,
+} from '@/lib/companion-layout';
 import {
   normalizeInlineFields,
   type InlineSummaryField,
@@ -351,6 +355,7 @@ export default defineContentScript({
       recordRepositoryEncounter(repository, 'link', anchor.innerText);
       applyInlineFieldVisibility(elements, inlineFields);
       applyCompanionPresentation(anchor, elements);
+      correctCompanionLayout(anchor, elements);
       elements.infoButton.addEventListener('click', () => openPopover(companion));
       elements.summaryRetry.addEventListener('click', () => void loadSummary(companion));
       elements.detailRetry.addEventListener('click', () => void loadDetail(companion));
@@ -690,9 +695,31 @@ function applyCompanionPresentation(
     inHeading: anchorHasHeading(anchor),
   });
   elements.root.dataset.presentation = presentation;
-  if (presentation === 'stacked') {
-    elements.host.style.setProperty('display', 'block', 'important');
-  }
+  elements.host.dataset.presentation = presentation;
+}
+
+function correctCompanionLayout(
+  anchor: HTMLAnchorElement,
+  elements: CompanionElements,
+): void {
+  const heading = anchor.querySelector<HTMLElement>('h1, h2, h3');
+  if (!heading) return;
+
+  window.requestAnimationFrame(() => {
+    if (!anchor.isConnected || !heading.isConnected || !elements.host.isConnected) return;
+    if (
+      getCompanionDomPosition(
+        heading.getBoundingClientRect(),
+        elements.host.getBoundingClientRect(),
+      ) !== 'before'
+    ) return;
+
+    anchor.before(elements.host);
+    const counterTransform = normalizeCounterTransform(getComputedStyle(heading).transform);
+    if (!counterTransform) return;
+    elements.root.style.transform = counterTransform;
+    elements.root.style.transformOrigin = 'center';
+  });
 }
 
 function isRefreshMessage(message: unknown): message is { type: 'refresh-previews' } {

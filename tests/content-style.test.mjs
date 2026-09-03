@@ -100,7 +100,8 @@ test('readable anchors are not rejected merely for containing layout elements', 
   assert.doesNotMatch(content, /anchor\.querySelector\([^)]*\bdiv\b/);
 });
 
-test('content script accepts media-backed result headings, deduplicates Google results, and never transforms companions', async () => {
+test('content script corrects flipped Google result companions while keeping them adjacent to the result anchor', async () => {
+  const css = await readFile(new URL('../styles/content.css', import.meta.url), 'utf8');
   const content = await readFile(new URL('../entrypoints/content.ts', import.meta.url), 'utf8');
   const fixture = await readFile(new URL('./fixtures/repo-links.html', import.meta.url), 'utf8');
 
@@ -108,10 +109,13 @@ test('content script accepts media-backed result headings, deduplicates Google r
   assert.match(content, /isHeadingLink:\s*anchorHasHeading\(anchor\)/);
   assert.match(content, /isGoogleSearchResultsPage\(location\.href\)/);
   assert.match(content, /selectPreferredRepositoryAnchors/);
-  assert.doesNotMatch(content, /correctCompanionLayout|findCounterTransform|normalizeCounterTransform/);
-  assert.doesNotMatch(content, /anchor\.before\(elements\.host\)/);
+  assert.match(content, /correctCompanionLayout\(anchor, elements\)/);
+  assert.match(content, /normalizeCounterTransform/);
+  assert.match(content, /anchor\.before\(elements\.host\)/);
+  assert.match(content, /host\.dataset\.presentation\s*=\s*presentation/);
+  assert.match(css, /:host\(\[data-presentation="stacked"\]\)[^{]*\{[^}]*display:\s*block\s*!important/);
   assert.match(content, /refresh-previews/);
-  assert.match(fixture, /role="heading"[^>]*>[\s\S]*?id="google-citation-link"[^>]*role="heading"[^>]*>[\s\S]*?<svg[\s\S]*?id="google-primary-link"[^>]*><span class="search-result-title">/);
+  assert.match(fixture, /class="search-result-heading"[^>]*>[\s\S]*?id="google-primary-link"[^>]*>[\s\S]*?<h3[^>]*>[\s\S]*?class="search-citation"/);
   assert.match(fixture, /id="google-read-more-link"/);
   assert.match(fixture, /id="google-issues-link"/);
   assert.match(fixture, /id="google-releases-link"/);

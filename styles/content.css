@@ -19,6 +19,10 @@
   font: inherit !important;
 }
 
+:host([data-presentation="stacked"]) {
+  display: block !important;
+}
+
 html, body {
   display: contents !important;
 }

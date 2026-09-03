@@ -39,21 +39,27 @@
       .search-result {
         list-style: none;
       }
+      .search-result-heading {
+        display: block;
+        transform: scaleY(-1);
+      }
       .search-citation {
-        display: flex;
+        display: inline-flex;
         align-items: center;
         gap: 8px;
         color: #4b5563;
         font-size: 14px;
+        transform: scaleY(-1);
       }
       .search-citation svg {
         width: 24px;
         height: 24px;
       }
       .search-result-title {
-        display: block;
+        display: inline-block;
         margin: 6px 0;
         font-size: 20px;
+        transform: scaleY(-1);
       }
       .search-result p {
         margin: 0;
@@ -72,13 +78,15 @@
         <li><a id="image-link" href="https://github.com/wxt-dev/wxt"><img alt="WXT logo" width="24" height="24" /></a> (image-only link: no summary)</li>
         <li><a id="google-style-link" href="https://github.com/wxt-dev/wxt"><div><strong>WXT on GitHub</strong><span>Modern web extension tooling</span></div></a></li>
         <li class="search-result">
-          <div class="search-result-heading" role="heading" aria-level="3">
-            <a id="google-citation-link" class="search-citation" role="heading" aria-level="3" href="https://github.com/herdrdev/herdr">
-              <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#e5e7eb" /><path d="M8 12h8" stroke="#4b5563" /></svg>
-              <span>GitHub · herdrdev / herdr</span>
+          <span class="search-result-heading">
+            <a id="google-primary-link" href="https://github.com/herdrdev/herdr">
+              <h3 class="search-result-title">herdrdev/herdr: the runtime your coding agents live on</h3><br />
+              <span class="search-citation">
+                <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#e5e7eb" /><path d="M8 12h8" stroke="#4b5563" /></svg>
+                <span>GitHub · https://github.com › herdrdev › herdr</span>
+              </span>
             </a>
-            <a id="google-primary-link" href="https://github.com/herdrdev/herdr"><span class="search-result-title">herdrdev/herdr: the runtime your coding agents live on</span></a>
-          </div>
+          </span>
           <p>The repository keeps your coding agents running. <a id="google-read-more-link" href="https://github.com/herdrdev/herdr">Read more</a></p>
           <a id="google-issues-link" href="https://github.com/herdrdev/herdr/issues">Issues · herdrdev/herdr</a>
           <a id="google-releases-link" href="https://github.com/herdrdev/herdr/releases">Releases · herdrdev/herdr</a>
