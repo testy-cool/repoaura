@@ -66,7 +66,7 @@ button, a { font: inherit; }
   padding: 0;
   color: var(--secondary);
   background: none;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   line-height: 1;
 }
@@ -95,7 +95,14 @@ button, a { font: inherit; }
   background: none;
   border-radius: 50%;
   isolation: isolate;
-  font: 700 8px/1 ui-serif, Georgia, serif;
+}
+.lens-info svg {
+  width: 8px;
+  height: 8px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.25;
+  stroke-linecap: round;
 }
 .lens-info::before {
   position: absolute;
@@ -175,13 +182,13 @@ button, a { font: inherit; }
 .repo-heading { min-width: 0; flex: 1; }
 .repo-title-row { display: flex; align-items: center; gap: 7px; }
 .repo-title-row strong { overflow: hidden; font-size: 14px; text-overflow: ellipsis; white-space: nowrap; }
-.activity-detail { display: block; margin-top: 2px; color: var(--secondary); font-size: 11px; }
+.activity-detail { display: block; margin-top: 2px; color: var(--secondary); font-size: 12px; }
 .activity-badge {
   padding: 2px 6px;
   color: var(--secondary);
   background: var(--elevated);
   border-radius: 999px;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 650;
 }
 .activity-badge[data-level="active"] { color: var(--green); }
@@ -202,22 +209,22 @@ button, a { font: inherit; }
 .metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 0; padding: 10px 0; background: var(--elevated); border-radius: 11px; }
 .metrics > div { min-width: 0; padding: 0 7px; text-align: center; }
 .metrics > div + div { border-left: 1px solid var(--border); }
-.metrics dt { margin-bottom: 3px; color: var(--tertiary); font-size: 9px; font-weight: 650; text-transform: uppercase; }
+.metrics dt { margin-bottom: 3px; color: var(--tertiary); font-size: 12px; font-weight: 650; text-transform: uppercase; }
 .metrics dd { margin: 0; overflow: hidden; font-size: 15px; font-weight: 650; text-overflow: ellipsis; }
-.metrics small { display: block; margin-top: 2px; overflow: hidden; color: var(--tertiary); font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
+.metrics small { display: block; margin-top: 2px; overflow: hidden; color: var(--tertiary); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
 .facts, .topics { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
 .topics { margin-top: 6px; }
-.fact-chip { padding: 3px 7px; color: var(--secondary); background: var(--elevated); border-radius: 6px; font-size: 10px; }
+.fact-chip { padding: 3px 7px; color: var(--secondary); background: var(--elevated); border-radius: 6px; font-size: 12px; }
 .fact-chip[data-tone="language"]::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 4px; background: var(--blue); border-radius: 50%; }
 .fact-chip[data-tone="topic"] { color: var(--blue); }
 .fact-chip[data-tone="notice"] { color: var(--orange); }
-.warning { margin: 10px 0 0; padding: 7px 9px; color: var(--orange); background: color-mix(in srgb, var(--orange) 10%, transparent); border-radius: 7px; font-size: 10px; }
+.warning { margin: 10px 0 0; padding: 7px 9px; color: var(--orange); background: color-mix(in srgb, var(--orange) 10%, transparent); border-radius: 7px; font-size: 12px; }
 .lens-footer { display: flex; align-items: end; justify-content: space-between; gap: 10px; margin-top: 13px; padding-top: 10px; border-top: 1px solid var(--border); }
-.freshness { display: flex; flex-direction: column; color: var(--tertiary); font-size: 10px; }
-.lens-footer a { color: var(--blue); font-size: 11px; font-weight: 650; text-decoration: none; }
+.freshness { display: flex; flex-direction: column; color: var(--tertiary); font-size: 12px; }
+.lens-footer a { color: var(--blue); font-size: 12px; font-weight: 650; text-decoration: none; }
 .error-mark { display: grid; width: 28px; height: 28px; flex: 0 0 28px; place-items: center; color: #fff; background: var(--red); border-radius: 50%; font-weight: 700; }
 .lens-detail-error strong { font-size: 12px; }
-.lens-detail-error p { margin: 3px 0 8px; color: var(--secondary); font-size: 11px; }
+.lens-detail-error p { margin: 3px 0 8px; color: var(--secondary); font-size: 12px; }
 
 .skeleton { display: block; background: linear-gradient(100deg, var(--elevated) 25%, rgba(118, 118, 128, 0.2) 42%, var(--elevated) 60%); background-size: 220% 100%; border-radius: 5px; animation: shimmer 1.2s linear infinite; }
 .skeleton-title { width: 58%; height: 15px; margin-bottom: 14px; }

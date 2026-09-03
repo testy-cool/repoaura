@@ -5,13 +5,14 @@ export interface InlineSummaryAnchorPolicyInput {
   repositoryHref: string;
   hasReadableText: boolean;
   isRendered: boolean;
+  hasVisualMedia: boolean;
   inMarkdownBody: boolean;
 }
 
 export function isInlineSummaryAnchorEligible(
   input: InlineSummaryAnchorPolicyInput,
 ): boolean {
-  if (!input.hasReadableText || !input.isRendered) return false;
+  if (!input.hasReadableText || !input.isRendered || input.hasVisualMedia) return false;
   const linkedRepository = parseGitHubRepositoryUrl(input.repositoryHref);
   if (!linkedRepository) return false;
 

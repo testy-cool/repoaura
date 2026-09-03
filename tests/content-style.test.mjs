@@ -23,7 +23,9 @@ test('compact summaries stay atomic instead of wrapping into narrow columns', as
 
 test('info circle uses its visible size for layout while extending its pointer target', async () => {
   const css = await readFile(new URL('../styles/content.css', import.meta.url), 'utf8');
+  const content = await readFile(new URL('../entrypoints/content.ts', import.meta.url), 'utf8');
   const infoRule = css.match(/\.lens-info\s*\{([^}]*)\}/)?.[1] ?? '';
+  const iconRule = css.match(/\.lens-info svg\s*\{([^}]*)\}/)?.[1] ?? '';
   const visualRule = css.match(/\.lens-info::before\s*\{([^}]*)\}/)?.[1] ?? '';
   const hitAreaRule = css.match(/\.lens-info::after\s*\{([^}]*)\}/)?.[1] ?? '';
 
@@ -34,12 +36,30 @@ test('info circle uses its visible size for layout while extending its pointer t
   assert.match(infoRule, /background:\s*none/);
   assert.match(infoRule, /align-self:\s*center/);
   assert.match(infoRule, /isolation:\s*isolate/);
-  assert.match(infoRule, /font:\s*700\s+8px\/1/);
+  assert.doesNotMatch(infoRule, /\bfont:/);
+  assert.match(iconRule, /width:\s*8px/);
+  assert.match(iconRule, /height:\s*8px/);
+  assert.match(iconRule, /stroke:\s*currentColor/);
+  assert.match(content, /class="lens-info"[^>]*>\s*<svg[^>]*aria-hidden="true"/);
+  assert.doesNotMatch(content, /class="lens-info"[^>]*>i<\/button>/);
   assert.match(visualRule, /inset:\s*0/);
   assert.match(visualRule, /border:\s*1px\s+solid\s+var\(--border\)/);
   assert.match(visualRule, /background:\s*var\(--surface\)/);
   assert.match(visualRule, /z-index:\s*-1/);
   assert.match(hitAreaRule, /inset:\s*-3px/);
+});
+
+test('injected UI never renders text below 12px', async () => {
+  const css = await readFile(new URL('../styles/content.css', import.meta.url), 'utf8');
+  const declaredSizes = [...css.matchAll(/font-size:\s*([\d.]+)px/g)]
+    .map((match) => Number(match[1]));
+  const shorthandSizes = [...css.matchAll(/font:\s*[^;]*?([\d.]+)px\//g)]
+    .map((match) => Number(match[1]));
+
+  assert.deepEqual(
+    [...declaredSizes, ...shorthandSizes].filter((size) => size < 12),
+    [],
+  );
 });
 
 test('shadow document wrappers do not split surrounding prose into block boxes', async () => {
@@ -80,11 +100,18 @@ test('readable anchors are not rejected merely for containing layout elements', 
   assert.doesNotMatch(content, /anchor\.querySelector\([^)]*\bdiv\b/);
 });
 
-test('content script corrects transformed companion placement and accepts explicit refreshes', async () => {
+test('content script skips media links and never reorders or transforms companions', async () => {
   const content = await readFile(new URL('../entrypoints/content.ts', import.meta.url), 'utf8');
+  const fixture = await readFile(new URL('./fixtures/repo-links.html', import.meta.url), 'utf8');
 
-  assert.match(content, /correctCompanionLayout\(/);
+  assert.match(content, /hasVisualMedia:\s*hasRenderedAnchorMedia\(anchor\)/);
+  assert.match(content, /anchor\.querySelector\('h1, h2, h3'\)/);
+  assert.doesNotMatch(content, /correctCompanionLayout|findCounterTransform|normalizeCounterTransform/);
+  assert.doesNotMatch(content, /anchor\.before\(elements\.host\)/);
   assert.match(content, /refresh-previews/);
+  assert.match(fixture, /id="google-citation-link"[^>]*>[\s\S]*?<svg/);
+  assert.match(fixture, /id="google-title-link"[^>]*issues\/123[^>]*><h3>/);
+  assert.match(fixture, /id="chatgpt-icon-link"[^>]*>[\s\S]*?<svg/);
 });
 
 test('content script records visible links and direct repository visits independently of caching', async () => {

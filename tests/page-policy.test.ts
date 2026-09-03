@@ -9,6 +9,7 @@ test('allows textual repository links and subpages on non-GitHub pages', async (
     repositoryHref: 'https://github.com/wxt-dev/wxt',
     hasReadableText: true,
     isRendered: true,
+    hasVisualMedia: false,
     inMarkdownBody: false,
   }), true);
   assert.equal(policy.isInlineSummaryAnchorEligible({
@@ -16,6 +17,7 @@ test('allows textual repository links and subpages on non-GitHub pages', async (
     repositoryHref: 'https://github.com/wxt-dev/wxt',
     hasReadableText: true,
     isRendered: true,
+    hasVisualMedia: false,
     inMarkdownBody: false,
   }), true);
   assert.equal(policy.isInlineSummaryAnchorEligible({
@@ -23,6 +25,7 @@ test('allows textual repository links and subpages on non-GitHub pages', async (
     repositoryHref: 'https://github.com/wxt-dev/wxt/blob/main/package.json',
     hasReadableText: true,
     isRendered: true,
+    hasVisualMedia: false,
     inMarkdownBody: false,
   }), true);
   assert.equal(policy.isInlineSummaryAnchorEligible({
@@ -30,6 +33,7 @@ test('allows textual repository links and subpages on non-GitHub pages', async (
     repositoryHref: 'https://github.com/wxt-dev/wxt/issues/123',
     hasReadableText: true,
     isRendered: true,
+    hasVisualMedia: false,
     inMarkdownBody: false,
   }), true);
   assert.equal(policy.isInlineSummaryAnchorEligible({
@@ -37,6 +41,15 @@ test('allows textual repository links and subpages on non-GitHub pages', async (
     repositoryHref: 'https://github.com/wxt-dev/wxt',
     hasReadableText: false,
     isRendered: true,
+    hasVisualMedia: false,
+    inMarkdownBody: false,
+  }), false);
+  assert.equal(policy.isInlineSummaryAnchorEligible({
+    pageHref: 'https://www.google.com/search?q=wxt',
+    repositoryHref: 'https://github.com/wxt-dev/wxt',
+    hasReadableText: true,
+    isRendered: true,
+    hasVisualMedia: true,
     inMarkdownBody: false,
   }), false);
 });
@@ -47,6 +60,7 @@ test('rejects every link on GitHub topic pages and descendants', async () => {
     repositoryHref: 'https://github.com/wxt-dev/wxt',
     hasReadableText: true,
     isRendered: true,
+    hasVisualMedia: false,
     inMarkdownBody: true,
   };
 
@@ -67,6 +81,7 @@ test('allows repository links on other GitHub pages only in rendered Markdown pr
     repositoryHref: 'https://github.com/oven-sh/bun',
     hasReadableText: true,
     isRendered: true,
+    hasVisualMedia: false,
   };
 
   assert.equal(policy.isInlineSummaryAnchorEligible({
@@ -90,6 +105,7 @@ test('rejects a repository link when its own GitHub README references itself', a
     repositoryHref: 'https://github.com/wxt-dev/wxt',
     hasReadableText: true,
     isRendered: true,
+    hasVisualMedia: false,
     inMarkdownBody: true,
   };
 

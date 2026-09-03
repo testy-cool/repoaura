@@ -6,11 +6,7 @@ import type {
   RepositoryPreview,
   RepositorySummary,
 } from '@/lib/contracts';
-import {
-  getCompanionDomPosition,
-  getCompanionPresentation,
-  normalizeCounterTransform,
-} from '@/lib/companion-layout';
+import { getCompanionPresentation } from '@/lib/companion-layout';
 import {
   normalizeInlineFields,
   type InlineSummaryField,
@@ -343,7 +339,6 @@ export default defineContentScript({
       recordRepositoryEncounter(repository, 'link', anchor.innerText);
       applyInlineFieldVisibility(elements, inlineFields);
       applyCompanionPresentation(anchor, elements);
-      correctCompanionLayout(anchor, elements);
       elements.infoButton.addEventListener('click', () => openPopover(companion));
       elements.summaryRetry.addEventListener('click', () => void loadSummary(companion));
       elements.detailRetry.addEventListener('click', () => void loadDetail(companion));
@@ -495,6 +490,7 @@ function eligibleRepository(anchor: HTMLAnchorElement): RepositoryCoordinate | n
     repositoryHref: anchor.href,
     hasReadableText: hasReadableAnchorText(anchor),
     isRendered: isRenderedAnchor(anchor),
+    hasVisualMedia: hasRenderedAnchorMedia(anchor),
     inMarkdownBody: Boolean(anchor.closest('.markdown-body')),
   }) ? repository : null;
 }
@@ -508,6 +504,21 @@ function isRenderedAnchor(anchor: HTMLAnchorElement): boolean {
   if (!anchor.isConnected || anchor.hidden || anchor.getClientRects().length === 0) return false;
   const style = getComputedStyle(anchor);
   return style.display !== 'none' && style.visibility !== 'hidden' && style.visibility !== 'collapse';
+}
+
+function hasRenderedAnchorMedia(anchor: HTMLAnchorElement): boolean {
+  return [...anchor.querySelectorAll<Element>('img, picture, svg, video, canvas')]
+    .some((element) => {
+      if (
+        !element.isConnected
+        || (element instanceof HTMLElement && element.hidden)
+        || element.getClientRects().length === 0
+      ) return false;
+      const style = getComputedStyle(element);
+      return style.display !== 'none'
+        && style.visibility !== 'hidden'
+        && style.visibility !== 'collapse';
+    });
 }
 
 function createCompanionElements(
@@ -527,7 +538,7 @@ function createCompanionElements(
           <span class="inline-last-push" data-summary-last-push></span>
         </span>
       </span>
-      <button class="lens-info" type="button" aria-label="Open details for ${escapeAttribute(fullName)}" aria-expanded="false" aria-haspopup="dialog">i</button>
+      <button class="lens-info" type="button" aria-label="Open details for ${escapeAttribute(fullName)}" aria-expanded="false" aria-haspopup="dialog"><svg viewBox="0 0 8 8" aria-hidden="true"><circle cx="4" cy="4" r="3.25" /><path d="M4 3.5v2M4 2.25h.01" /></svg></button>
       <article class="lens-popover" popover="auto" data-open="false" role="dialog" hidden>
         <button class="lens-close" type="button" aria-label="Close repository details">×</button>
         <div class="lens-detail-loading">
@@ -626,24 +637,6 @@ function applyInlineFieldVisibility(
   elements.summaryLastPush.hidden = !selected.has('lastPush');
 }
 
-function correctCompanionLayout(anchor: HTMLAnchorElement, elements: CompanionElements): void {
-  window.requestAnimationFrame(() => {
-    if (!anchor.isConnected || !elements.host.isConnected) return;
-    if (
-      getCompanionDomPosition(
-        anchor.getBoundingClientRect(),
-        elements.host.getBoundingClientRect(),
-      ) !== 'before'
-    ) return;
-
-    const counterTransform = findCounterTransform(anchor);
-    anchor.before(elements.host);
-    if (!counterTransform) return;
-    elements.root.style.transform = counterTransform;
-    elements.root.style.transformOrigin = 'center';
-  });
-}
-
 function applyCompanionPresentation(
   anchor: HTMLAnchorElement,
   elements: CompanionElements,
@@ -653,21 +646,12 @@ function applyCompanionPresentation(
     anchorDisplay: getComputedStyle(anchor).display,
     anchorWidth: anchor.getBoundingClientRect().width,
     parentWidth: parent?.getBoundingClientRect().width ?? 0,
-    inHeading: Boolean(anchor.closest('h1, h2, h3')),
+    inHeading: Boolean(anchor.closest('h1, h2, h3') || anchor.querySelector('h1, h2, h3')),
   });
   elements.root.dataset.presentation = presentation;
   if (presentation === 'stacked') {
     elements.host.style.setProperty('display', 'block', 'important');
   }
-}
-
-function findCounterTransform(anchor: HTMLAnchorElement): string | null {
-  const candidates = [anchor, ...anchor.querySelectorAll<HTMLElement>('*')];
-  for (const element of candidates) {
-    const transform = normalizeCounterTransform(getComputedStyle(element).transform);
-    if (transform) return transform;
-  }
-  return null;
 }
 
 function isRefreshMessage(message: unknown): message is { type: 'refresh-previews' } {

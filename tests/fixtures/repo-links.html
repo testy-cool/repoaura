@@ -36,29 +36,53 @@
       .spacer {
         height: 500px;
       }
-      .google-inverted-result {
-        display: flex;
-        flex-direction: column;
-        transform: rotate(180deg);
+      .search-result {
+        list-style: none;
       }
-      .google-inverted-result > a > div {
-        transform: rotate(180deg);
+      .search-citation {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #4b5563;
+        font-size: 14px;
+      }
+      .search-citation svg {
+        width: 24px;
+        height: 24px;
+      }
+      .search-result h3 {
+        margin: 6px 0;
+        font-size: 20px;
+      }
+      .search-result p {
+        margin: 0;
       }
     </style>
   </head>
   <body>
     <main>
       <h1>Repositories worth a look</h1>
-      <p>Repository-root links receive inline summaries. Use each info button for details.</p>
+      <p>Textual repository links and GitHub subpage links receive inline summaries. Use each info button for details.</p>
       <ul>
         <li><a id="wxt-link" href="https://github.com/wxt-dev/wxt">WXT</a></li>
         <li><a id="linux-link" href="https://github.com/torvalds/linux">Linux</a></li>
-        <li><a id="file-link" href="https://github.com/wxt-dev/wxt/blob/main/package.json">WXT package file (no preview)</a></li>
+        <li><a id="file-link" href="https://github.com/wxt-dev/wxt/blob/main/package.json">WXT package file (summarizes WXT)</a></li>
         <li><a id="invalid-link" href="https://github.com/topics/browser-extension">GitHub topic (no preview)</a></li>
         <li><a id="image-link" href="https://github.com/wxt-dev/wxt"><img alt="WXT logo" width="24" height="24" /></a> (image-only link: no summary)</li>
         <li><a id="google-style-link" href="https://github.com/wxt-dev/wxt"><div><strong>WXT on GitHub</strong><span>Modern web extension tooling</span></div></a></li>
-        <li class="google-inverted-result"><a id="google-inverted-link" href="https://github.com/D4Vinci/Scrapling"><div><strong>Scrapling on GitHub</strong><span>Adaptive web scraping</span></div></a></li>
-        <li><a id="mutable-link" href="https://github.com/wxt-dev/wxt/issues">Mutable link starts ineligible</a></li>
+        <li class="search-result">
+          <a id="google-citation-link" class="search-citation" href="https://github.com/herdrdev/herdr/issues">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#e5e7eb" /><path d="M8 12h8" stroke="#4b5563" /></svg>
+            <span>GitHub · herdrdev / herdr / issues</span>
+          </a>
+          <a id="google-title-link" href="https://github.com/herdrdev/herdr/issues/123"><h3>Bug report: copy functionality not working</h3></a>
+          <p>The media-bearing citation stays untouched; the issue title receives an upright summary below it.</p>
+        </li>
+        <li>
+          <a id="chatgpt-icon-link" href="https://github.com/herdrdev/herdr"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><circle cx="8" cy="8" r="7" /></svg> GitHub</a>
+          (icon-bearing chip: no summary), while <a id="chatgpt-text-link" href="https://github.com/herdrdev/herdr">herdr</a> receives one.
+        </li>
+        <li><a id="mutable-link" href="https://github.com/wxt-dev/wxt/issues">Mutable repository-subpage link</a></li>
       </ul>
       <div class="spacer"></div>
       <a id="bottom-link" href="https://github.com/oven-sh/bun">Bun near the viewport edge</a>
