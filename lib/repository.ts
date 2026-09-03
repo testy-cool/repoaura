@@ -79,15 +79,12 @@ const REPO_PATTERN = /^(?!\.\.?$)[\w.-]{1,100}$/u;
 
 export function parseGitHubRepositoryUrl(href: string): RepositoryCoordinate | null {
   const url = parseGitHubUrl(href);
-  if (!url) return null;
-  if (url.hash) return null;
-
-  return parseRepositoryPath(url, true);
+  return url ? parseRepositoryPath(url) : null;
 }
 
 export function parseGitHubRepositoryPageUrl(href: string): RepositoryCoordinate | null {
   const url = parseGitHubUrl(href);
-  return url ? parseRepositoryPath(url, false) : null;
+  return url ? parseRepositoryPath(url) : null;
 }
 
 function parseGitHubUrl(href: string): URL | null {
@@ -100,13 +97,13 @@ function parseGitHubUrl(href: string): URL | null {
   }
 }
 
-function parseRepositoryPath(url: URL, exactRoot: boolean): RepositoryCoordinate | null {
+function parseRepositoryPath(url: URL): RepositoryCoordinate | null {
   const segments = url.pathname
     .split('/')
     .filter(Boolean)
     .map((segment) => decodeURIComponentSafely(segment));
 
-  if (segments.length < 2 || (exactRoot && segments.length !== 2)) return null;
+  if (segments.length < 2) return null;
   if (segments[0] == null || segments[1] == null) return null;
 
   const owner = segments[0]!;

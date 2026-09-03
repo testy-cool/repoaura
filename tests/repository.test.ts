@@ -30,18 +30,19 @@ test('parses repository-root links', () => {
   });
 });
 
-test('rejects file, folder, and feature links inside a repository', () => {
-  assert.equal(parseGitHubRepositoryUrl('https://github.com/wxt-dev/wxt/tree/main'), null);
-  assert.equal(parseGitHubRepositoryUrl('https://github.com/wxt-dev/wxt/blob/main/package.json'), null);
-  assert.equal(parseGitHubRepositoryUrl('https://github.com/wxt-dev/wxt/issues'), null);
-  assert.equal(parseGitHubRepositoryUrl('https://github.com/wxt-dev/wxt/pull/123'), null);
-  assert.equal(parseGitHubRepositoryUrl('https://github.com/wxt-dev/wxt/commit/abc123'), null);
-  assert.equal(parseGitHubRepositoryUrl('https://github.com/wxt-dev/wxt/releases/tag/v1.0.0'), null);
-});
-
-test('rejects section links within a repository page', () => {
-  assert.equal(parseGitHubRepositoryUrl('https://github.com/wxt-dev/wxt#readme'), null);
-  assert.equal(parseGitHubRepositoryUrl('https://github.com/wxt-dev/wxt#contributing-ov-file'), null);
+test('resolves repository identity from subpages and fragments', () => {
+  for (const href of [
+    'https://github.com/wxt-dev/wxt/tree/main',
+    'https://github.com/wxt-dev/wxt/blob/main/package.json',
+    'https://github.com/wxt-dev/wxt/issues',
+    'https://github.com/wxt-dev/wxt/issues/123',
+    'https://github.com/wxt-dev/wxt/pull/123',
+    'https://github.com/wxt-dev/wxt/commit/abc123',
+    'https://github.com/wxt-dev/wxt/releases/tag/v1.0.0',
+    'https://github.com/wxt-dev/wxt#readme',
+  ]) {
+    assert.deepEqual(parseGitHubRepositoryUrl(href), { owner: 'wxt-dev', repo: 'wxt' });
+  }
 });
 
 test('rejects non-repository GitHub and lookalike links', () => {

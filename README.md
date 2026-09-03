@@ -42,16 +42,16 @@ site**. **Never on this site** always wins and provides a quick local override.
 
 | Context | Behavior |
 |---|---|
-| Allowed non-GitHub page | Adds a summary to readable repository-root links |
+| Allowed non-GitHub page | Adds a summary to readable links anywhere inside a repository |
 | GitHub README prose | Adds summaries to other repositories linked inside `.markdown-body` |
 | Repository linking to itself | Does nothing |
 | `github.com/topics` | Does nothing |
-| File, folder, issue, pull request, commit, or release link | Does nothing |
-| Image-only link or URL with a fragment | Does nothing |
+| File, folder, issue, pull request, commit, release, or fragment link | Summarizes the containing repository |
+| Image-only link | Does nothing |
 
-RepoAura deliberately recognizes exact repository roots such as
-`https://github.com/owner/repo`. It does not guess that every GitHub URL should
-be analyzed.
+RepoAura resolves repository identity from the `owner/repo` prefix, whether a
+link points to the repository root or one of its pages. It still rejects GitHub
+routes that do not identify a repository.
 
 ## Reading repository status
 

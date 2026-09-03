@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-test('allows textual exact repository-root links on non-GitHub pages', async () => {
+test('allows textual repository links and subpages on non-GitHub pages', async () => {
   const policy = await import('../lib/page-policy.ts');
 
   assert.equal(policy.isInlineSummaryAnchorEligible({
@@ -24,7 +24,14 @@ test('allows textual exact repository-root links on non-GitHub pages', async () 
     hasReadableText: true,
     isRendered: true,
     inMarkdownBody: false,
-  }), false);
+  }), true);
+  assert.equal(policy.isInlineSummaryAnchorEligible({
+    pageHref: 'https://www.google.com/search?q=wxt',
+    repositoryHref: 'https://github.com/wxt-dev/wxt/issues/123',
+    hasReadableText: true,
+    isRendered: true,
+    inMarkdownBody: false,
+  }), true);
   assert.equal(policy.isInlineSummaryAnchorEligible({
     pageHref: 'https://example.com/article',
     repositoryHref: 'https://github.com/wxt-dev/wxt',

@@ -2,9 +2,9 @@
 
 ## Product contract
 
-RepoAura is a Chrome Manifest V3 extension built with WXT and plain TypeScript. On approved non-GitHub HTTP(S) pages, readable repository-root links receive an adjacent inline health summary. On `github.com`, summaries are limited to links inside rendered `.markdown-body` prose and are disabled entirely on `/topics` and descendants. A click on the adjacent info button opens details; hover and focus alone must never open it.
+RepoAura is a Chrome Manifest V3 extension built with WXT and plain TypeScript. On approved non-GitHub HTTP(S) pages, readable links to repository roots or repository subpages receive an adjacent inline health summary for the containing repository. On `github.com`, summaries are limited to links inside rendered `.markdown-body` prose and are disabled entirely on `/topics` and descendants. A click on the adjacent info button opens details; hover and focus alone must never open it.
 
-Do not broaden activation to image-only links, files, folders, issues, pull requests, commits, releases, or URL fragments without positive and negative tests.
+Do not broaden activation to image-only links or GitHub routes that do not identify a repository. Changes to URL or anchor recognition require positive and negative tests.
 
 Keep these meanings separate:
 
@@ -61,9 +61,9 @@ Run `npm run check` before each commit. Add focused tests for URL recognition, p
 
 After `npm run check`, load `.build/chrome-mv3` in an isolated Playwright Chromium profile, not a user's normal browser profile. Verify:
 
-1. A visible repository-root link on a non-GitHub fixture gains an inline summary without hovering; hover and focus do not open details.
+1. Visible repository-root and repository-subpage links on a non-GitHub fixture gain inline summaries without hovering; hover and focus do not open details.
 2. Clicking the info button opens details with repository identity, activity, issue-date labels, `Checked …` freshness, Escape dismissal, and no clipping.
-3. A GitHub README `.markdown-body` repository link is eligible, a visible `/blob/` link is not, and `/topics` has no companions.
+3. A GitHub README `.markdown-body` link to another repository or its subpage is eligible, a self-repository link is not, and `/topics` has no companions.
 4. Fresh installs do not inject before page access is chosen; selected-site mode injects only after Chrome grants that origin.
 5. If archive behavior changed, use the real configured PocketBase or closest isolated equivalent and verify health plus one write/readback canary without exposing credentials or private page data.
 
