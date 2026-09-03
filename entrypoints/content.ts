@@ -523,8 +523,12 @@ function eligibleRepository(anchor: HTMLAnchorElement): RepositoryCoordinate | n
 }
 
 function anchorHasHeading(anchor: HTMLAnchorElement): boolean {
-  const selector = 'h1, h2, h3, [role="heading"]';
-  return Boolean(anchor.closest(selector) || anchor.querySelector(selector));
+  return Boolean(
+    anchor.closest('h1, h2, h3')
+    || anchor.querySelector('h1, h2, h3')
+    || anchor.matches('[role="heading"]')
+    || anchor.querySelector('[role="heading"]'),
+  );
 }
 
 function hasReadableAnchorText(anchor: HTMLAnchorElement): boolean {

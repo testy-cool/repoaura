@@ -108,15 +108,22 @@ test('content script accepts media-backed result headings, deduplicates Google r
   assert.match(content, /isHeadingLink:\s*anchorHasHeading\(anchor\)/);
   assert.match(content, /isGoogleSearchResultsPage\(location\.href\)/);
   assert.match(content, /selectPreferredRepositoryAnchors/);
-  assert.match(content, /h1, h2, h3, \[role="heading"\]/);
   assert.doesNotMatch(content, /correctCompanionLayout|findCounterTransform|normalizeCounterTransform/);
   assert.doesNotMatch(content, /anchor\.before\(elements\.host\)/);
   assert.match(content, /refresh-previews/);
-  assert.match(fixture, /id="google-primary-link"[^>]*>[\s\S]*?<svg[\s\S]*?<h3>/);
+  assert.match(fixture, /role="heading"[^>]*>[\s\S]*?id="google-citation-link"[^>]*>[\s\S]*?<svg[\s\S]*?id="google-primary-link"[^>]*><h3>/);
   assert.match(fixture, /id="google-read-more-link"/);
   assert.match(fixture, /id="google-issues-link"/);
   assert.match(fixture, /id="google-releases-link"/);
   assert.match(fixture, /id="chatgpt-icon-link"[^>]*>[\s\S]*?<svg/);
+});
+
+test('ARIA heading containers do not promote their citation links to result titles', async () => {
+  const content = await readFile(new URL('../entrypoints/content.ts', import.meta.url), 'utf8');
+
+  assert.match(content, /anchor\.closest\('h1, h2, h3'\)/);
+  assert.match(content, /anchor\.matches\('\[role="heading"\]'\)/);
+  assert.doesNotMatch(content, /anchor\.closest\(selector\)/);
 });
 
 test('content script records visible links and direct repository visits independently of caching', async () => {
