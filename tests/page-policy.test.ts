@@ -10,6 +10,7 @@ test('allows textual repository links and subpages on non-GitHub pages', async (
     hasReadableText: true,
     isRendered: true,
     hasVisualMedia: false,
+    isHeadingLink: false,
     inMarkdownBody: false,
   }), true);
   assert.equal(policy.isInlineSummaryAnchorEligible({
@@ -18,6 +19,7 @@ test('allows textual repository links and subpages on non-GitHub pages', async (
     hasReadableText: true,
     isRendered: true,
     hasVisualMedia: false,
+    isHeadingLink: false,
     inMarkdownBody: false,
   }), true);
   assert.equal(policy.isInlineSummaryAnchorEligible({
@@ -26,6 +28,7 @@ test('allows textual repository links and subpages on non-GitHub pages', async (
     hasReadableText: true,
     isRendered: true,
     hasVisualMedia: false,
+    isHeadingLink: false,
     inMarkdownBody: false,
   }), true);
   assert.equal(policy.isInlineSummaryAnchorEligible({
@@ -34,6 +37,7 @@ test('allows textual repository links and subpages on non-GitHub pages', async (
     hasReadableText: true,
     isRendered: true,
     hasVisualMedia: false,
+    isHeadingLink: false,
     inMarkdownBody: false,
   }), true);
   assert.equal(policy.isInlineSummaryAnchorEligible({
@@ -42,6 +46,7 @@ test('allows textual repository links and subpages on non-GitHub pages', async (
     hasReadableText: false,
     isRendered: true,
     hasVisualMedia: false,
+    isHeadingLink: false,
     inMarkdownBody: false,
   }), false);
   assert.equal(policy.isInlineSummaryAnchorEligible({
@@ -50,8 +55,18 @@ test('allows textual repository links and subpages on non-GitHub pages', async (
     hasReadableText: true,
     isRendered: true,
     hasVisualMedia: true,
+    isHeadingLink: false,
     inMarkdownBody: false,
   }), false);
+  assert.equal(policy.isInlineSummaryAnchorEligible({
+    pageHref: 'https://www.google.com/search?q=wxt',
+    repositoryHref: 'https://github.com/wxt-dev/wxt',
+    hasReadableText: true,
+    isRendered: true,
+    hasVisualMedia: true,
+    isHeadingLink: true,
+    inMarkdownBody: false,
+  }), true);
 });
 
 test('rejects every link on GitHub topic pages and descendants', async () => {
@@ -61,6 +76,7 @@ test('rejects every link on GitHub topic pages and descendants', async () => {
     hasReadableText: true,
     isRendered: true,
     hasVisualMedia: false,
+    isHeadingLink: false,
     inMarkdownBody: true,
   };
 
@@ -82,6 +98,7 @@ test('allows repository links on other GitHub pages only in rendered Markdown pr
     hasReadableText: true,
     isRendered: true,
     hasVisualMedia: false,
+    isHeadingLink: false,
   };
 
   assert.equal(policy.isInlineSummaryAnchorEligible({
@@ -106,6 +123,7 @@ test('rejects a repository link when its own GitHub README references itself', a
     hasReadableText: true,
     isRendered: true,
     hasVisualMedia: false,
+    isHeadingLink: false,
     inMarkdownBody: true,
   };
 

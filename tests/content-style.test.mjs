@@ -100,17 +100,22 @@ test('readable anchors are not rejected merely for containing layout elements', 
   assert.doesNotMatch(content, /anchor\.querySelector\([^)]*\bdiv\b/);
 });
 
-test('content script skips media links and never reorders or transforms companions', async () => {
+test('content script accepts media-backed result headings, deduplicates Google results, and never transforms companions', async () => {
   const content = await readFile(new URL('../entrypoints/content.ts', import.meta.url), 'utf8');
   const fixture = await readFile(new URL('./fixtures/repo-links.html', import.meta.url), 'utf8');
 
   assert.match(content, /hasVisualMedia:\s*hasRenderedAnchorMedia\(anchor\)/);
-  assert.match(content, /anchor\.querySelector\('h1, h2, h3'\)/);
+  assert.match(content, /isHeadingLink:\s*anchorHasHeading\(anchor\)/);
+  assert.match(content, /isGoogleSearchResultsPage\(location\.href\)/);
+  assert.match(content, /selectPreferredRepositoryAnchors/);
+  assert.match(content, /h1, h2, h3, \[role="heading"\]/);
   assert.doesNotMatch(content, /correctCompanionLayout|findCounterTransform|normalizeCounterTransform/);
   assert.doesNotMatch(content, /anchor\.before\(elements\.host\)/);
   assert.match(content, /refresh-previews/);
-  assert.match(fixture, /id="google-citation-link"[^>]*>[\s\S]*?<svg/);
-  assert.match(fixture, /id="google-title-link"[^>]*issues\/123[^>]*><h3>/);
+  assert.match(fixture, /id="google-primary-link"[^>]*>[\s\S]*?<svg[\s\S]*?<h3>/);
+  assert.match(fixture, /id="google-read-more-link"/);
+  assert.match(fixture, /id="google-issues-link"/);
+  assert.match(fixture, /id="google-releases-link"/);
   assert.match(fixture, /id="chatgpt-icon-link"[^>]*>[\s\S]*?<svg/);
 });
 

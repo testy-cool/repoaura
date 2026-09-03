@@ -6,6 +6,11 @@ import type {
   RepositoryPreview,
   RepositorySummary,
 } from '@/lib/contracts';
+import {
+  isGoogleSearchResultsPage,
+  selectPreferredRepositoryAnchors,
+  type RepositoryAnchorCandidate,
+} from '@/lib/anchor-selection';
 import { getCompanionPresentation } from '@/lib/companion-layout';
 import {
   normalizeInlineFields,
@@ -108,6 +113,7 @@ export default defineContentScript({
     const companions = new Map<HTMLAnchorElement, Companion>();
     const observedAnchors = new Set<HTMLAnchorElement>();
     const pendingAnchors = new Set<HTMLAnchorElement>();
+    let selectedAnchors = new Set<HTMLAnchorElement>();
     const encounteredPageRepositories = new Set<string>();
 
     const recordRepositoryEncounter = (
@@ -195,6 +201,7 @@ export default defineContentScript({
       for (const anchor of observedAnchors) intersectionObserver.unobserve(anchor);
       observedAnchors.clear();
       pendingAnchors.clear();
+      selectedAnchors.clear();
     };
 
     const loadSummary = async (companion: Companion) => {
@@ -281,7 +288,11 @@ export default defineContentScript({
     };
 
     const mountCompanion = async (anchor: HTMLAnchorElement) => {
-      if (pendingAnchors.has(anchor) || companions.has(anchor)) return;
+      if (
+        !selectedAnchors.has(anchor)
+        || pendingAnchors.has(anchor)
+        || companions.has(anchor)
+      ) return;
       const repository = eligibleRepository(anchor);
       if (!repository) return;
       pendingAnchors.add(anchor);
@@ -312,6 +323,7 @@ export default defineContentScript({
           excludedSites,
         )
         || !anchor.isConnected
+        || !selectedAnchors.has(anchor)
       ) {
         ui.remove();
         return;
@@ -381,22 +393,36 @@ export default defineContentScript({
         removeAllCompanions();
         return;
       }
+      const candidates: Array<RepositoryAnchorCandidate<HTMLAnchorElement>> = [];
+      for (const anchor of document.querySelectorAll<HTMLAnchorElement>('a[href]')) {
+        const repository = eligibleRepository(anchor);
+        if (!repository) continue;
+        candidates.push({
+          anchor,
+          repositoryKey: repositoryKey(repository),
+          hasHeading: anchorHasHeading(anchor),
+          linkText: anchor.innerText,
+        });
+      }
+      selectedAnchors = new Set(selectPreferredRepositoryAnchors(
+        candidates,
+        isGoogleSearchResultsPage(location.href),
+      ));
       for (const companion of [...companions.values()]) {
         const repository = eligibleRepository(companion.anchor);
-        if (!repository || repositoryKey(repository) !== repositoryKey(companion.repository)) {
-          removeCompanion(companion);
-        }
+        if (
+          !selectedAnchors.has(companion.anchor)
+          || !repository
+          || repositoryKey(repository) !== repositoryKey(companion.repository)
+        ) removeCompanion(companion);
       }
-      const eligible = new Set<HTMLAnchorElement>();
-      for (const anchor of document.querySelectorAll<HTMLAnchorElement>('a[href]')) {
-        if (!eligibleRepository(anchor)) continue;
-        eligible.add(anchor);
+      for (const anchor of selectedAnchors) {
         if (companions.has(anchor) || pendingAnchors.has(anchor) || observedAnchors.has(anchor)) continue;
         observedAnchors.add(anchor);
         intersectionObserver.observe(anchor);
       }
       for (const anchor of [...observedAnchors]) {
-        if (eligible.has(anchor)) continue;
+        if (selectedAnchors.has(anchor)) continue;
         intersectionObserver.unobserve(anchor);
         observedAnchors.delete(anchor);
       }
@@ -491,8 +517,14 @@ function eligibleRepository(anchor: HTMLAnchorElement): RepositoryCoordinate | n
     hasReadableText: hasReadableAnchorText(anchor),
     isRendered: isRenderedAnchor(anchor),
     hasVisualMedia: hasRenderedAnchorMedia(anchor),
+    isHeadingLink: anchorHasHeading(anchor),
     inMarkdownBody: Boolean(anchor.closest('.markdown-body')),
   }) ? repository : null;
+}
+
+function anchorHasHeading(anchor: HTMLAnchorElement): boolean {
+  const selector = 'h1, h2, h3, [role="heading"]';
+  return Boolean(anchor.closest(selector) || anchor.querySelector(selector));
 }
 
 function hasReadableAnchorText(anchor: HTMLAnchorElement): boolean {
@@ -646,7 +678,7 @@ function applyCompanionPresentation(
     anchorDisplay: getComputedStyle(anchor).display,
     anchorWidth: anchor.getBoundingClientRect().width,
     parentWidth: parent?.getBoundingClientRect().width ?? 0,
-    inHeading: Boolean(anchor.closest('h1, h2, h3') || anchor.querySelector('h1, h2, h3')),
+    inHeading: anchorHasHeading(anchor),
   });
   elements.root.dataset.presentation = presentation;
   if (presentation === 'stacked') {
