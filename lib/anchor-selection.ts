@@ -2,6 +2,8 @@ export interface RepositoryAnchorCandidate<T> {
   anchor: T;
   repositoryKey: string;
   hasHeading: boolean;
+  hasNativeHeading: boolean;
+  hasVisualMedia: boolean;
   linkText: string;
 }
 
@@ -41,10 +43,15 @@ export function selectPreferredRepositoryAnchors<T>(
 }
 
 function scoreCandidate<T>(candidate: RepositoryAnchorCandidate<T>): number {
-  if (candidate.hasHeading) return 2;
-  return isGenericLinkText(candidate.linkText) ? 0 : 1;
+  if (candidate.hasNativeHeading) return 5;
+  if (isGenericLinkText(candidate.linkText)) return 0;
+  if (candidate.hasHeading && !candidate.hasVisualMedia) return 4;
+  if (!candidate.hasVisualMedia) return 3;
+  return candidate.hasHeading ? 2 : 1;
 }
 
 function isGenericLinkText(value: string): boolean {
-  return GENERIC_LINK_LABELS.has(value.replace(/\s+/g, ' ').trim().toLowerCase());
+  const normalized = value.replace(/\s+/g, ' ').trim().toLowerCase();
+  return GENERIC_LINK_LABELS.has(normalized)
+    || (normalized.startsWith('github ') && normalized.includes('github.com'));
 }

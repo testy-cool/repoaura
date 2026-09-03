@@ -401,6 +401,8 @@ export default defineContentScript({
           anchor,
           repositoryKey: repositoryKey(repository),
           hasHeading: anchorHasHeading(anchor),
+          hasNativeHeading: anchorHasNativeHeading(anchor),
+          hasVisualMedia: hasRenderedAnchorMedia(anchor),
           linkText: anchor.innerText,
         });
       }
@@ -524,11 +526,14 @@ function eligibleRepository(anchor: HTMLAnchorElement): RepositoryCoordinate | n
 
 function anchorHasHeading(anchor: HTMLAnchorElement): boolean {
   return Boolean(
-    anchor.closest('h1, h2, h3')
-    || anchor.querySelector('h1, h2, h3')
+    anchorHasNativeHeading(anchor)
     || anchor.matches('[role="heading"]')
     || anchor.querySelector('[role="heading"]'),
   );
+}
+
+function anchorHasNativeHeading(anchor: HTMLAnchorElement): boolean {
+  return Boolean(anchor.closest('h1, h2, h3') || anchor.querySelector('h1, h2, h3'));
 }
 
 function hasReadableAnchorText(anchor: HTMLAnchorElement): boolean {

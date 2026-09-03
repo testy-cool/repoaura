@@ -111,7 +111,7 @@ test('content script accepts media-backed result headings, deduplicates Google r
   assert.doesNotMatch(content, /correctCompanionLayout|findCounterTransform|normalizeCounterTransform/);
   assert.doesNotMatch(content, /anchor\.before\(elements\.host\)/);
   assert.match(content, /refresh-previews/);
-  assert.match(fixture, /role="heading"[^>]*>[\s\S]*?id="google-citation-link"[^>]*>[\s\S]*?<svg[\s\S]*?id="google-primary-link"[^>]*><h3>/);
+  assert.match(fixture, /role="heading"[^>]*>[\s\S]*?id="google-citation-link"[^>]*role="heading"[^>]*>[\s\S]*?<svg[\s\S]*?id="google-primary-link"[^>]*><span class="search-result-title">/);
   assert.match(fixture, /id="google-read-more-link"/);
   assert.match(fixture, /id="google-issues-link"/);
   assert.match(fixture, /id="google-releases-link"/);
