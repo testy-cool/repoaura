@@ -1,0 +1,27 @@
+name: "💡 Feature Request"
+description: Suggest an enhancement, new metric, or site integration for RepoAura
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have an idea for RepoAura? We value signal-dense, zero-bloat enhancements.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or Missing Signal
+      description: What friction or missing context are you running into?
+    validations:
+      required: true
+  - type: textarea
+    id: proposed_solution
+    attributes:
+      label: Proposed Solution / Desired Behavior
+      description: How should RepoAura handle or display this?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Any other approaches or existing workarounds?

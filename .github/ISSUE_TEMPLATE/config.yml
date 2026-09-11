@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Ask a Question / General Discussion
+    url: https://github.com/testy-cool/repoaura/discussions
+    about: Ask questions, share ideas, and discuss RepoAura with the community.

@@ -1,5 +1,9 @@
 # RepoAura
 
+[![CI](https://github.com/testy-cool/repoaura/actions/workflows/ci.yml/badge.svg)](https://github.com/testy-cool/repoaura/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Manifest V3](https://img.shields.io/badge/manifest-MV3-brightgreen.svg)](wxt.config.ts)
+
 > Repository health, right beside the GitHub links you are already reading.
 
 RepoAura is a Chrome extension that adds a small health summary to repository
@@ -123,6 +127,7 @@ procedure.
 
 ## Project documents
 
+- [Contributing guidelines](CONTRIBUTING.md)
 - [Privacy and data flow](PRIVACY.md)
 - [Security policy](SECURITY.md)
 - [PocketBase operations](ops/pocketbase/README.md)

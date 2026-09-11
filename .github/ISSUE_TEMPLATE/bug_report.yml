@@ -1,0 +1,55 @@
+name: "🐛 Bug Report"
+description: File a report about broken behavior, layout shifts, or parsing errors in RepoAura
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve RepoAura! Please describe the issue and the page where it happened.
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Clear description of the unexpected behavior.
+    validations:
+      required: true
+  - type: input
+    id: page_url
+    attributes:
+      label: Page URL
+      description: The webpage URL where the repository link was rendered (e.g. `https://news.ycombinator.com`, `https://example.com/blog`).
+    validations:
+      required: true
+  - type: input
+    id: target_repo
+    attributes:
+      label: Target GitHub Repository Link
+      description: The GitHub repo link that showed inaccurate data or failed to render (e.g. `https://github.com/owner/repo`).
+    validations:
+      required: false
+  - type: dropdown
+    id: browser
+    attributes:
+      label: Browser
+      options:
+        - Chrome
+        - Brave
+        - Edge
+        - Arc
+        - Firefox
+        - Other Chromium
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: RepoAura Version
+      description: Found in the extension popup (e.g. `1.0.0`).
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Console Logs (if applicable)
+      description: Any errors from Chrome DevTools console.
+      render: shell
