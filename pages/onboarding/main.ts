@@ -1,4 +1,5 @@
 import './style.css';
+import { PERSONAL_BUILD } from '@/lib/build';
 
 import type {
   ExtensionResponse,
@@ -25,7 +26,9 @@ app.innerHTML = `
         <span>Use the toolbar button on each site you approve.</span>
       </button>
     </div>
-    <p class="privacy">Page access only detects eligible GitHub links. Private encounter history and PocketBase export stay off unless you enable them separately.</p>
+    <p class="privacy">${PERSONAL_BUILD
+      ? 'Page access only detects eligible GitHub links. Private encounter history and PocketBase export stay off unless you enable them separately.'
+      : 'No account or server setup. Repository data is fetched from GitHub and cached in this Chrome profile.'}</p>
     <p id="status" role="status" aria-live="polite"></p>
   </section>
 `;

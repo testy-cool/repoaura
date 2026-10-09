@@ -24,7 +24,7 @@ async function loadInstaller() {
 async function createFixture() {
   const repoRoot = await mkdtemp(path.join(os.tmpdir(), 'github-lens-installer-'));
   fixtureRoots.push(repoRoot);
-  const sourceDir = path.join(repoRoot, '.build', 'chrome-mv3');
+  const sourceDir = path.join(repoRoot, '.build', 'chrome-mv3-personal');
   const destinationDir = path.join(repoRoot, '.output', 'chrome-mv3');
   const stagingDir = path.join(repoRoot, '.output', 'chrome-mv3.next');
   const backupDir = path.join(repoRoot, '.output', 'chrome-mv3.previous');

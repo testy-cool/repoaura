@@ -1,4 +1,5 @@
 import '@/styles/content.css';
+import { PERSONAL_BUILD } from '@/lib/build';
 
 import type {
   ExtensionResponse,
@@ -352,7 +353,7 @@ export default defineContentScript({
         detailRequestSequence: 0,
       };
       companions.set(anchor, companion);
-      recordRepositoryEncounter(repository, 'link', anchor.innerText);
+      if (PERSONAL_BUILD) recordRepositoryEncounter(repository, 'link', anchor.innerText);
       applyInlineFieldVisibility(elements, inlineFields);
       applyCompanionPresentation(anchor, elements);
       correctCompanionLayout(anchor, elements);
@@ -492,11 +493,11 @@ export default defineContentScript({
     window.addEventListener('resize', positionOpenPopover);
     const onLocationChange = () => {
       scheduleReconcile();
-      recordDirectRepositoryVisit();
+      if (PERSONAL_BUILD) recordDirectRepositoryVisit();
     };
     window.addEventListener('wxt:locationchange', onLocationChange);
     reconcile();
-    recordDirectRepositoryVisit();
+    if (PERSONAL_BUILD) recordDirectRepositoryVisit();
 
     ctx.onInvalidated(() => {
       invalidated = true;

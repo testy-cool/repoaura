@@ -142,6 +142,7 @@ test('content script records visible links and direct repository visits independ
 
 test('popup exposes page access, inline, refresh, and privacy-separated archive controls', async () => {
   const popup = await readFile(new URL('../entrypoints/popup/main.ts', import.meta.url), 'utf8');
+  const archive = await readFile(new URL('../lib/popup-archive.ts', import.meta.url), 'utf8');
   const content = await readFile(new URL('../entrypoints/content.ts', import.meta.url), 'utf8');
   const config = await readFile(new URL('../wxt.config.ts', import.meta.url), 'utf8');
 
@@ -152,16 +153,16 @@ test('popup exposes page access, inline, refresh, and privacy-separated archive 
   assert.match(popup, /id="page-access-mode"/);
   assert.match(popup, /id="enable-current-site"/);
   assert.match(popup, /id="refresh-page"/);
-  assert.match(popup, /id="archive-snapshots-enabled"/);
-  assert.match(popup, /id="archive-encounters-enabled"/);
-  assert.match(popup, /id="archive-endpoint"/);
-  assert.match(popup, /id="test-archive"/);
-  assert.match(popup, /id="open-archive"/);
+  assert.match(archive, /id="archive-snapshots-enabled"/);
+  assert.match(archive, /id="archive-encounters-enabled"/);
+  assert.match(archive, /id="archive-endpoint"/);
+  assert.match(archive, /id="test-archive"/);
+  assert.match(archive, /id="open-archive"/);
   assert.match(popup, /Cached for 24 hours/);
   assert.match(popup, />↻ Refresh now</);
   assert.match(popup, />Save changes</);
   assert.match(config, /permissions:\s*\[[^\]]*'activeTab'/s);
-  assert.match(config, /permissions:\s*\[[^\]]*'alarms'/s);
+  assert.match(config, /mode === 'personal' \? \['alarms'/);
   assert.match(config, /permissions:\s*\[[^\]]*'scripting'/s);
   assert.match(config, /optional_host_permissions:\s*\[[^\]]*'http:\/\/\*\/\*'/s);
   assert.match(config, /optional_host_permissions:\s*\[[^\]]*'https:\/\/\*\/\*'/s);
@@ -169,14 +170,14 @@ test('popup exposes page access, inline, refresh, and privacy-separated archive 
   assert.match(content, /registration:\s*'runtime'/);
   assert.match(popup, /browser\.permissions\.request/);
   assert.doesNotMatch(popup, /browser\.permissions\.contains/);
-  assert.match(popup, /Waiting for Chrome’s access prompt/);
-  assert.match(popup, /ARCHIVE_PERMISSION_TIMEOUT_MS/);
-  assert.match(popup, /Needs access/);
-  assert.match(popup, /full page URL and title/i);
+  assert.match(archive, /Waiting for Chrome’s access prompt/);
+  assert.match(archive, /ARCHIVE_PERMISSION_TIMEOUT_MS/);
+  assert.match(archive, /Needs access/);
+  assert.match(archive, /page origin, path, and title/i);
 
-  const saveArchiveStart = popup.indexOf('async function saveArchiveSettings');
-  const persistIntent = popup.indexOf("type: 'save-archive-settings'", saveArchiveStart);
-  const requestAccess = popup.indexOf('ensureArchivePermission(endpoint)', saveArchiveStart);
+  const saveArchiveStart = archive.indexOf('async function saveArchiveSettings');
+  const persistIntent = archive.indexOf("type: 'save-archive-settings'", saveArchiveStart);
+  const requestAccess = archive.indexOf('ensureArchivePermission(endpoint)', saveArchiveStart);
   assert.ok(persistIntent > saveArchiveStart);
   assert.ok(requestAccess > persistIntent, 'archive intent must persist before Chrome opens its prompt');
 });

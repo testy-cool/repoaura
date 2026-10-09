@@ -3,7 +3,7 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const OWNED_PATHS = {
-  sourceDir: path.join('.build', 'chrome-mv3'),
+  sourceDir: path.join('.build', 'chrome-mv3-personal'),
   destinationDir: path.join('.output', 'chrome-mv3'),
   stagingDir: path.join('.output', 'chrome-mv3.next'),
   backupDir: path.join('.output', 'chrome-mv3.previous'),
@@ -295,7 +295,7 @@ async function runCli(args) {
     backupDir: path.join(repoRoot, OWNED_PATHS.backupDir),
     extensionDisabled: true,
   });
-  console.log('Installed .build/chrome-mv3 at stable path .output/chrome-mv3.');
+  console.log('Installed personal .build/chrome-mv3-personal at stable path .output/chrome-mv3.');
   console.log('Previous install: .output/chrome-mv3.previous');
 }
 

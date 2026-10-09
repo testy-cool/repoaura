@@ -13,9 +13,13 @@
     "zip:firefox": "wxt zip -b firefox",
     "compile": "tsc --noEmit",
     "test": "node --experimental-strip-types --test tests/*.test.ts tests/*.test.mjs",
-    "check": "npm run compile && npm test && npm run build",
+    "check": "npm run compile && npm test && npm run build && npm run build:personal && npm run test:build",
     "install:local": "npm run check && node scripts/install-local.mjs",
-    "postinstall": "wxt prepare"
+    "postinstall": "wxt prepare",
+    "dev:personal": "wxt --mode personal",
+    "build:personal": "wxt build --mode personal",
+    "zip:personal": "wxt zip --mode personal",
+    "test:build": "node --test tests/builds.check.mjs"
   },
   "devDependencies": {
     "typescript": "^5.9.3",

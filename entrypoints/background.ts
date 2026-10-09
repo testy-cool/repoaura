@@ -1,3 +1,4 @@
+import { PERSONAL_BUILD } from '../lib/build.ts';
 import type {
   ExtensionErrorCode,
   ExtensionRequest,
@@ -205,13 +206,15 @@ export const backgroundTestState = (() => ({
 
 export default defineBackground(() => {
   void ensureCacheMigration();
-  void flushArchiveQueue();
+  if (PERSONAL_BUILD) {
+    void flushArchiveQueue();
+    browser.alarms.onAlarm.addListener((alarm) => {
+      if (alarm.name === ARCHIVE_ALARM) void flushArchiveQueue();
+    });
+  }
   void synchronizePageAccess();
-  browser.alarms.onAlarm.addListener((alarm) => {
-    if (alarm.name === ARCHIVE_ALARM) void flushArchiveQueue();
-  });
   browser.permissions.onAdded.addListener(() => {
-    void handleArchivePermissionAdded();
+    if (PERSONAL_BUILD) void handleArchivePermissionAdded();
     void synchronizePageAccess();
   });
   browser.permissions.onRemoved.addListener(() => {
@@ -233,32 +236,15 @@ export async function handleMessage(
   sender: Browser.runtime.MessageSender,
 ): Promise<ExtensionResponse<unknown>> {
   try {
+    if (PERSONAL_BUILD) {
+      const archiveResponse = await handleArchiveMessage(message, sender);
+      if (archiveResponse) return archiveResponse;
+    }
     switch (message.type) {
       case 'repository-summary':
         return await getRepositorySummary(message.owner, message.repo);
       case 'repository-preview':
         return await getRepositoryPreview(message.owner, message.repo);
-      case 'record-repository-encounter': {
-        const pageUrl = normalizeEncounterPageUrl(message.pageUrl);
-        if (!pageUrl || !isEncounterSender(sender, pageUrl)) {
-          return errorResponse('invalid-encounter', 'Encounter page identity did not match its tab.');
-        }
-        const encounter = buildRepositoryEncounter({
-          encounterId: message.encounterId,
-          owner: message.owner,
-          repo: message.repo,
-          source: message.source,
-          pageUrl,
-          pageTitle: message.pageTitle,
-          linkText: message.linkText,
-          seenAt: new Date(clockNow()).toISOString(),
-        });
-        if (!encounter) {
-          return errorResponse('invalid-encounter', 'Encounter data was invalid.');
-        }
-        const recorded = await enqueueRepositoryEncounter(encounter);
-        return { ok: true, data: { recorded } };
-      }
       case 'get-settings': {
         const settings = await readSettings();
         const response: PublicGitHubLensSettings = {
@@ -300,53 +286,84 @@ export async function handleMessage(
         invalidateRequestGeneration();
         await clearStoredCache();
         return { ok: true, data: undefined };
-      case 'get-archive-settings':
-        assertExtensionPage(sender);
-        return { ok: true, data: await readArchiveState() };
-      case 'save-archive-settings': {
-        assertExtensionPage(sender);
-        const settings = normalizeArchiveSettings(message.settings);
-        const requestedArchive = message.settings.snapshotsEnabled
-          || message.settings.encountersEnabled;
-        if (requestedArchive && settings.endpoint.length === 0) {
-          return errorResponse(
-            'invalid-archive-endpoint',
-            'Enter an HTTPS PocketBase origin without a path.',
-          );
-        }
-        archiveSettingsOverride = settings;
-        archiveRepairPromise = null;
-        await browser.storage.local.set({ [ARCHIVE_SETTINGS_KEY]: settings });
-        if (!settings.snapshotsEnabled) {
-          await mutateArchiveQueue(() => []);
-        }
-        if (!settings.encountersEnabled) {
-          await mutateEncounterQueue(() => []);
-        }
-        if (
-          (settings.snapshotsEnabled || settings.encountersEnabled)
-          && await hasArchiveAccess(settings.endpoint)
-        ) {
-          scheduleArchiveFlush(0.02);
-          void flushArchiveQueue();
-        }
-        return { ok: true, data: await readArchiveState() };
-      }
-      case 'test-archive': {
-        assertExtensionPage(sender);
-        const settings = await readArchiveSettings();
-        await testArchiveConnection(settings);
-        return { ok: true, data: await readArchiveState() };
-      }
-      case 'flush-archive':
-        assertExtensionPage(sender);
-        await flushArchiveQueue();
-        return { ok: true, data: await readArchiveState() };
       default:
         return errorResponse('unknown', 'Unsupported request.');
     }
   } catch (error) {
     return mapError(error);
+  }
+}
+
+async function handleArchiveMessage(
+  message: ExtensionRequest,
+  sender: Browser.runtime.MessageSender,
+): Promise<ExtensionResponse<unknown> | undefined> {
+  switch (message.type) {
+    case 'record-repository-encounter': {
+      const pageUrl = normalizeEncounterPageUrl(message.pageUrl);
+      if (!pageUrl || !isEncounterSender(sender, pageUrl)) {
+        return errorResponse('invalid-encounter', 'Encounter page identity did not match its tab.');
+      }
+      const encounter = buildRepositoryEncounter({
+        encounterId: message.encounterId,
+        owner: message.owner,
+        repo: message.repo,
+        source: message.source,
+        pageUrl,
+        pageTitle: message.pageTitle,
+        linkText: message.linkText,
+        seenAt: new Date(clockNow()).toISOString(),
+      });
+      if (!encounter) {
+        return errorResponse('invalid-encounter', 'Encounter data was invalid.');
+      }
+      const recorded = await enqueueRepositoryEncounter(encounter);
+      return { ok: true, data: { recorded } };
+    }
+    case 'get-archive-settings':
+      assertExtensionPage(sender);
+      return { ok: true, data: await readArchiveState() };
+    case 'save-archive-settings': {
+      assertExtensionPage(sender);
+      const settings = normalizeArchiveSettings(message.settings);
+      const requestedArchive = message.settings.snapshotsEnabled
+        || message.settings.encountersEnabled;
+      if (requestedArchive && settings.endpoint.length === 0) {
+        return errorResponse(
+          'invalid-archive-endpoint',
+          'Enter an HTTPS PocketBase origin without a path.',
+        );
+      }
+      archiveSettingsOverride = settings;
+      archiveRepairPromise = null;
+      await browser.storage.local.set({ [ARCHIVE_SETTINGS_KEY]: settings });
+      if (!settings.snapshotsEnabled) {
+        await mutateArchiveQueue(() => []);
+      }
+      if (!settings.encountersEnabled) {
+        await mutateEncounterQueue(() => []);
+      }
+      if (
+        (settings.snapshotsEnabled || settings.encountersEnabled)
+        && await hasArchiveAccess(settings.endpoint)
+      ) {
+        scheduleArchiveFlush(0.02);
+        void flushArchiveQueue();
+      }
+      return { ok: true, data: await readArchiveState() };
+    }
+    case 'test-archive': {
+      assertExtensionPage(sender);
+      const settings = await readArchiveSettings();
+      await testArchiveConnection(settings);
+      return { ok: true, data: await readArchiveState() };
+    }
+    case 'flush-archive':
+      assertExtensionPage(sender);
+      await flushArchiveQueue();
+      return { ok: true, data: await readArchiveState() };
+    default:
+      return undefined;
   }
 }
 
@@ -445,7 +462,7 @@ async function fetchAndCacheSummary(
     now: () => new Date(clockNow()),
   });
   await cacheStage(key, 'summary', stage, generation);
-  if (generation === requestGeneration) {
+  if (PERSONAL_BUILD && generation === requestGeneration) {
     await enqueueArchiveObservation(buildRepositoryObservation(summaryObservationInput(stage)));
   }
   return stage;
@@ -463,7 +480,7 @@ async function fetchDetailForRepository(
   const detail = await enrichRepositoryDetail(stage, { token: settings.token });
   if (fillsDeferredIssues) await updateCachedSummaryData(key, stage, generation);
   await cacheStage(key, 'detail', detail, generation);
-  if (generation === requestGeneration) {
+  if (PERSONAL_BUILD && generation === requestGeneration) {
     await enqueueArchiveObservation(buildRepositoryObservation(detailObservationInput(detail)));
   }
   return detail;
@@ -1344,7 +1361,7 @@ function assertExtensionPage(sender: Browser.runtime.MessageSender): void {
 }
 
 function mapError(error: unknown): ExtensionResponse<never> {
-  if (error instanceof ArchiveConnectionError) {
+  if (PERSONAL_BUILD && error instanceof ArchiveConnectionError) {
     return errorResponse('archive-unreachable', error.message);
   }
   if (error instanceof GitHubApiError) {

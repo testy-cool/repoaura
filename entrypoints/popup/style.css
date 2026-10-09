@@ -15,7 +15,7 @@
 }
 
 body {
-  width: 356px;
+  width: min(356px, 100vw);
   margin: 0;
   background:
     radial-gradient(circle at 100% 0, rgba(0, 113, 227, 0.08), transparent 42%),
@@ -81,7 +81,7 @@ h1 {
 .app-header p {
   margin-top: 2px;
   color: #6e6e73;
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 450;
   line-height: 1.35;
 }
@@ -121,7 +121,7 @@ h2 {
 .section-heading p {
   margin-top: 3px;
   color: #6e6e73;
-  font-size: 10.5px;
+  font-size: 12px;
   font-weight: 450;
   line-height: 1.35;
 }
@@ -209,7 +209,7 @@ h2 {
   display: block;
   margin-bottom: 5px;
   color: #6e6e73;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -221,7 +221,7 @@ h2 {
   background: rgba(118, 118, 128, 0.075);
   border: 1px solid transparent;
   border-radius: 9px;
-  font-size: 11px;
+  font-size: 12px;
   outline: none;
 }
 
@@ -238,7 +238,7 @@ h2 {
   gap: 8px;
   margin-top: 8px;
   color: #8e8e93;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .archive-state {
@@ -247,7 +247,7 @@ h2 {
   color: #6e6e73;
   background: rgba(118, 118, 128, 0.1);
   border-radius: 999px;
-  font-size: 9.5px;
+  font-size: 12px;
   font-weight: 650;
 }
 
@@ -267,7 +267,7 @@ h2 {
   min-height: 32px;
   padding: 0 8px;
   border-radius: 8px;
-  font-size: 10.5px;
+  font-size: 12px;
   font-weight: 620;
   cursor: pointer;
 }
@@ -297,7 +297,7 @@ h2 {
   border: 1px solid transparent;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 10.5px;
+  font-size: 12px;
   font-weight: 620;
   text-align: center;
 }
@@ -334,7 +334,7 @@ h2 {
   display: block;
   margin-bottom: 5px;
   color: #6e6e73;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -348,7 +348,7 @@ h2 {
   background: rgba(118, 118, 128, 0.075);
   border: 1px solid transparent;
   border-radius: 9px;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.35;
   outline: none;
 }
@@ -362,7 +362,7 @@ h2 {
   background: rgba(118, 118, 128, 0.075);
   border: 1px solid transparent;
   border-radius: 9px;
-  font-size: 11px;
+  font-size: 12px;
   outline: none;
 }
 
@@ -381,7 +381,7 @@ h2 {
 .site-note {
   margin-top: 8px;
   color: #8e8e93;
-  font-size: 9.5px;
+  font-size: 12px;
   line-height: 1.4;
 }
 
@@ -391,7 +391,7 @@ h2 {
   margin-top: 10px;
   padding: 0 10px;
   border-radius: 8px;
-  font-size: 10.5px;
+  font-size: 12px;
   font-weight: 620;
   cursor: pointer;
 }
@@ -416,7 +416,7 @@ h2 {
   color: #6e6e73;
   background: rgba(118, 118, 128, 0.1);
   border-radius: 999px;
-  font-size: 9.5px;
+  font-size: 12px;
   font-weight: 650;
   line-height: 1.2;
 }
@@ -440,7 +440,7 @@ h2 {
   border: 1px solid transparent;
   border-radius: 9px;
   font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
-  font-size: 11px;
+  font-size: 12px;
   outline: none;
   transition: background-color 120ms ease-out, border-color 120ms ease-out, box-shadow 120ms ease-out;
 }
@@ -496,7 +496,7 @@ h2 {
 .privacy-note {
   margin-top: 8px;
   color: #8e8e93;
-  font-size: 9.5px;
+  font-size: 12px;
   font-weight: 450;
   line-height: 1.4;
 }
@@ -516,7 +516,7 @@ h2 {
 .cache-note {
   margin-top: 12px;
   color: #8e8e93;
-  font-size: 9.5px;
+  font-size: 12px;
   line-height: 1.4;
   text-align: center;
 }
@@ -525,7 +525,7 @@ h2 {
   min-height: 34px;
   padding: 0 13px;
   border-radius: 9px;
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 620;
   cursor: pointer;
   transition: background-color 120ms ease-out, transform 100ms ease-out, opacity 120ms ease-out;
@@ -571,7 +571,7 @@ h2 {
   min-height: 14px;
   margin-top: 8px;
   color: #6e6e73;
-  font-size: 9.5px;
+  font-size: 12px;
   font-weight: 500;
   line-height: 1.35;
   text-align: right;
@@ -734,3 +734,7 @@ h2 {
     background: #2c2c2e;
   }
 }
+
+/* Keep action labels readable at the popup size. */
+button { font-size: 14px; }
+.archive-actions button, .actions button, .site-action { font-size: 14px; }

@@ -121,6 +121,17 @@ npm run dev
 Chrome Manifest V3 build under `.build/chrome-mv3`. Use `npm run zip` to create
 the release archive.
 
+The default build and ZIP are public packages: PocketBase controls, delivery,
+encounter collection, and the archive alarm permission are excluded at build time.
+`npm run check` also builds and checks the personal variant.
+
+For personal use, run `npm run build:personal` or `npm run zip:personal`.
+The unpacked personal extension is `.build/chrome-mv3-personal` and its ZIP is
+`.build/repoaura-1.0.0-chrome-personal.zip`. `npm run dev:personal` starts personal
+watch mode. The guarded `install:local` command installs this personal variant
+at the existing `.output/chrome-mv3` path, preserving the loaded extension's identity;
+Chrome must be disabled first and `--extension-disabled` passed explicitly.
+
 Before changing browser behavior, read [AGENTS.md](AGENTS.md). It defines the
 positive and negative link contracts and the isolated-browser verification
 procedure.

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test, { beforeEach } from 'node:test';
 
-Object.assign(globalThis, { defineBackground: () => undefined });
+Object.assign(globalThis, { defineBackground: () => undefined, __REPOAURA_PERSONAL__: true });
 
 const {
   backgroundTestState,
