@@ -104,14 +104,12 @@ app.innerHTML = `
       </button>
     </section>
 
-    <section class="token-section" aria-labelledby="token-heading">
-      <div class="section-heading">
-        <div>
-          <h2 id="token-heading">GitHub token</h2>
-          <p>Optional. Raises API limits and can preview repos you can access.</p>
-        </div>
+    <details class="token-section">
+      <summary class="token-toggle">
+        <span>Advanced: GitHub token</span>
         <span id="token-state" class="token-state">Not set</span>
-      </div>
+      </summary>
+      <p class="site-note">Optional. Use without a token, or add one for higher API limits and private repositories you can access.</p>
 
       <div class="token-field">
         <input
@@ -133,7 +131,7 @@ app.innerHTML = `
       <p class="privacy-note">
         Stored only in this Chrome profile and sent only to <span>api.github.com</span>.
       </p>
-    </section>
+    </details>
 
     ${PERSONAL_BUILD ? ARCHIVE_SETTINGS_MARKUP : ''}
 

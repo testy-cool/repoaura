@@ -18,7 +18,9 @@ Thank you for contributing to RepoAura! We keep the development loop fast and le
    ```bash
    npm run check
    ```
-   This compiles TypeScript, runs the unit and contract suites, and outputs the Chrome Manifest V3 extension bundle into `.build/chrome-mv3`.
+   This compiles TypeScript, runs the unit and contract suites, builds the public
+   package at `.build/chrome-mv3` and the personal package at
+   `.build/chrome-mv3-personal`, and checks the package boundaries.
 
 3. **Load in Chrome:**
    - Open `chrome://extensions` in your browser.
@@ -35,7 +37,9 @@ Thank you for contributing to RepoAura! We keep the development loop fast and le
 - **Zero visual noise:** Injected UI must remain quiet, calm, and readable. We adhere to high-legibility engineering aesthetics—no greebling, decorative clutter, or faux badges.
 - **Font size floor:** Injected text must never be smaller than 12px.
 - **Contract tests:** Changes to DOM insertion, layout anchoring, or caching must include corresponding tests in `tests/`.
-- **Privacy:** RepoAura does not embed telemetry or vendor analytics. Sensitive tokens must never leave `chrome.storage.local`.
+- **Privacy:** RepoAura does not embed telemetry or vendor analytics. Tokens stay in `chrome.storage.local` and may be sent only to `https://api.github.com`.
+- **Build separation:** Public builds must exclude archive delivery and encounter collection.
+  Use `npm run dev:personal` to work on the personal archive integration.
 
 ## Finding Issues
 

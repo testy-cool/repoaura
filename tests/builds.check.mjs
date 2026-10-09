@@ -25,6 +25,9 @@ test('public package contains previews but no archive controls, delivery, or enc
   assert.deepEqual(manifest.content_scripts, []);
   assert.match(scripts, /repository-summary/);
   assert.match(scripts, /repository-preview/);
+  assert.match(scripts, /Try it on GitHub/);
+  assert.match(scripts, /sindresorhus\/awesome/);
+  assert.match(scripts, /Advanced: GitHub token/);
   assert.doesNotMatch(scripts, /PocketBase|archive-snapshots-enabled|archive-encounters-enabled/);
   assert.doesNotMatch(scripts, /repository_observations|repository_encounters|record-repository-encounter/);
   assert.doesNotMatch(scripts, /githubLensArchive|githubLensEncounter|\/api\/health/);

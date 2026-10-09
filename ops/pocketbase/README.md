@@ -1,6 +1,11 @@
 # RepoAura PocketBase archive
 
-These files define RepoAura's optional, self-hosted archive. They create:
+These files define the personal build's optional, self-hosted archive.
+The public build excludes this integration. Use `npm run build:personal` and load
+`.build/chrome-mv3-personal`, or use the guarded personal local installer.
+See [archive privacy](PRIVACY.md) for the personal data contract.
+
+The migrations create:
 
 - `repository_observations` for fresh GitHub metadata snapshots;
 - `repository_encounters` for explicitly enabled private browsing history;

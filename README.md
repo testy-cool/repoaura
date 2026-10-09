@@ -4,16 +4,13 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Manifest V3](https://img.shields.io/badge/manifest-MV3-brightgreen.svg)](wxt.config.ts)
 
-> Repository health, right beside the GitHub links you are already reading.
+> Stars and recent activity beside the GitHub links you’re already reading.
 
-RepoAura is a Chrome extension that adds a small health summary to repository
-links without making you leave the page. In a live verification run, the
-default line answered the useful questions at a glance:
+RepoAura helps you decide which projects deserve a closer look without opening
+every repository in a new tab. It adds a small summary beside readable GitHub
+links, wherever you’ve enabled it.
 
-```text
-Pydantic AI Harness
-  ★ 828  ●  1h  ⓘ
-```
+No account, GitHub token, or server setup is required.
 
 Click the info button for the description, issue dates, contributors, language,
 license, topics, forks, watchers, and freshness. Hovering and focusing never
@@ -21,7 +18,7 @@ open the card. Hover the compact values to read their explicit labels.
 
 ## What you get
 
-- **Health where you need it.** Read stars, activity, and last push beside the
+- **Signals where you need them.** Read stars, activity, and last push beside the
   original link.
 - **Useful detail on demand.** API-heavy issue and contributor requests begin
   only after you click the info button.
@@ -32,15 +29,32 @@ open the card. Hover the compact values to read their explicit labels.
 
 ## Install
 
-1. Download `repoaura-1.0.0-chrome.zip` from the
-   [latest release](https://github.com/testy-cool/repoaura/releases/latest).
-2. Unzip it.
-3. Open `chrome://extensions` and enable **Developer mode**.
-4. Choose **Load unpacked** and select the unzipped folder.
-5. Choose all-site or selected-site access when RepoAura opens.
+For now, install the public build locally with Node.js 22:
 
-In selected-site mode, open RepoAura on a page and choose **Enable on this
+```bash
+git clone https://github.com/testy-cool/repoaura.git
+cd repoaura
+npm ci
+npm run build
+```
+
+1. Open `chrome://extensions` and enable **Developer mode**.
+2. Choose **Load unpacked** and select `.build/chrome-mv3`.
+3. Choose all-site or selected-site access when RepoAura opens.
+4. Choose **Try it on GitHub** to see summaries on a project list. In selected-site
+   mode, Chrome asks for GitHub access only.
+
+You can also run `npm run zip` to prepare the public Chrome Web Store package.
+A store installation link will be added when the listing is published.
+
+In selected-site mode, open RepoAura on another page and choose **Enable on this
 site**. **Never on this site** always wins and provides a quick local override.
+
+## Try it
+
+Open [Awesome](https://github.com/sindresorhus/awesome#platforms), a list of projects,
+with GitHub access enabled. Look for stars and activity beside readable repository
+links, then click an info button for details.
 
 ## Where it appears
 
@@ -62,7 +76,7 @@ routes that do not identify a repository.
 | Status | Meaning |
 |---|---|
 | **● Active** | Pushed within the last 30 days |
-| **◐ Quiet** | No push in the last 30 days |
+| **◉ Quiet** | No push in the last 30 days |
 | **○ Dormant** | No push in the last six months |
 | **□ Archived** | GitHub reports the repository as archived |
 | **× Unavailable** | GitHub reports the repository as disabled or no push date is available |
@@ -77,35 +91,18 @@ The popup lets you:
 
 - choose stars, activity, and last push independently;
 - grant or revoke site access;
-- add an optional read-only GitHub token for higher limits and repositories the
-  token can access;
 - clear the cache and refresh the current page immediately;
-- independently enable PocketBase snapshots or encounter history.
+- optionally add a GitHub token under **Advanced** for higher API limits and
+  repositories the token can access.
 
 Repository metadata is cached locally for 24 hours, with five-minute caching
 for degraded responses. Identical requests are coalesced, and the cache retains
-at most 100 repositories. **Refresh now** clears it before reloading the page.
+at most 100 repositories. **Refresh now** clears it and reloads summaries on the current page.
 
-RepoAura has no vendor analytics. A GitHub token remains in
-`chrome.storage.local`, is sent only to `https://api.github.com`, and is never
-written to the optional archive. See [PRIVACY.md](PRIVACY.md) for the complete
+The public extension has no browsing-history collection, archive export, or vendor
+analytics. An optional GitHub token remains in `chrome.storage.local` and is sent
+only to `https://api.github.com`. See [PRIVACY.md](PRIVACY.md) for the complete
 permission and data-flow contract.
-
-## Optional PocketBase history
-
-PocketBase support is off by default. Repository snapshots and private
-encounter history use separate switches. Encounter records include the source
-page origin and path, page title, link text, and whether the repository was
-linked or visited directly; query strings and fragments are removed.
-
-The extension receives create-only collection access, never a PocketBase
-superuser credential. Persisted retry queues keep archive failures from blocking
-the repository summary.
-
-For an agent-operated installation, provide
-[`skills/setup-repoaura-pocketbase/SKILL.md`](skills/setup-repoaura-pocketbase/SKILL.md)
-to the buyer's agent. Reusable migrations and the service template live under
-[`ops/pocketbase/`](ops/pocketbase/).
 
 ## Development
 
@@ -130,7 +127,9 @@ The unpacked personal extension is `.build/chrome-mv3-personal` and its ZIP is
 `.build/repoaura-1.0.0-chrome-personal.zip`. `npm run dev:personal` starts personal
 watch mode. The guarded `install:local` command installs this personal variant
 at the existing `.output/chrome-mv3` path, preserving the loaded extension's identity;
-Chrome must be disabled first and `--extension-disabled` passed explicitly.
+RepoAura must be disabled in Chrome first; run `npm run install:local -- --extension-disabled`.
+Personal archive setup and its separate privacy contract live under
+[`ops/pocketbase/`](ops/pocketbase/README.md).
 
 Before changing browser behavior, read [AGENTS.md](AGENTS.md). It defines the
 positive and negative link contracts and the isolated-browser verification
@@ -141,5 +140,4 @@ procedure.
 - [Contributing guidelines](CONTRIBUTING.md)
 - [Privacy and data flow](PRIVACY.md)
 - [Security policy](SECURITY.md)
-- [PocketBase operations](ops/pocketbase/README.md)
 - [MIT license](LICENSE)
