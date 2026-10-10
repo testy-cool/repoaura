@@ -25,4 +25,5 @@ jobs:
         with:
           name: repoaura-chrome
           path: .build/repoaura-*-chrome.zip
+          include-hidden-files: true
           if-no-files-found: error
