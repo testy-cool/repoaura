@@ -29,26 +29,26 @@ open the card. Hover the compact values to read their explicit labels.
 
 ## Install
 
-For now, install the public build locally with Node.js 22:
+No Node.js or build commands needed:
 
-```bash
-git clone https://github.com/testy-cool/repoaura.git
-cd repoaura
-npm ci
-npm run build
-```
-
-1. Open `chrome://extensions` and enable **Developer mode**.
-2. Choose **Load unpacked** and select `.build/chrome-mv3`.
-3. Choose all-site or selected-site access when RepoAura opens.
-4. Choose **Try it on GitHub** to see summaries on a project list. In selected-site
+1. [Download RepoAura for Chrome](https://github.com/testy-cool/repoaura/releases/download/v1.0.1/repoaura-1.0.1-chrome.zip).
+2. Unzip it into a folder you will keep, such as `Extensions/RepoAura`.
+3. Open `chrome://extensions` and enable **Developer mode** at the top right.
+4. Click **Load unpacked** and select the unzipped folder containing `manifest.json`.
+5. Choose all-site or selected-site access when RepoAura opens.
+6. Click **Try it on GitHub** to see summaries on a project list. In selected-site
    mode, Chrome asks for GitHub access only.
 
-You can also run `npm run zip` to prepare the public Chrome Web Store package.
-A store installation link will be added when the listing is published.
+Keep the unzipped folder: Chrome loads the extension from that location. RepoAura
+is not yet listed in the Chrome Web Store, so installation uses Developer mode.
 
 In selected-site mode, open RepoAura on another page and choose **Enable on this
 site**. **Never on this site** always wins and provides a quick local override.
+
+To update, download the new ZIP from [Releases](https://github.com/testy-cool/repoaura/releases),
+close its popup, replace the files in the same extension folder, and click its
+reload button on `chrome://extensions`. Unpacked installs do not update automatically.
+To uninstall, click **Remove** on that page, then delete the unzipped folder.
 
 ## Try it
 
@@ -109,6 +109,8 @@ permission and data-flow contract.
 RepoAura requires Node.js 22.
 
 ```bash
+git clone https://github.com/testy-cool/repoaura.git
+cd repoaura
 npm ci
 npm run check
 npm run dev
@@ -124,7 +126,7 @@ encounter collection, and the archive alarm permission are excluded at build tim
 
 For personal use, run `npm run build:personal` or `npm run zip:personal`.
 The unpacked personal extension is `.build/chrome-mv3-personal` and its ZIP is
-`.build/repoaura-1.0.0-chrome-personal.zip`. `npm run dev:personal` starts personal
+`.build/repoaura-1.0.1-chrome-personal.zip`. `npm run dev:personal` starts personal
 watch mode. The guarded `install:local` command installs this personal variant
 at the existing `.output/chrome-mv3` path, preserving the loaded extension's identity;
 RepoAura must be disabled in Chrome first; run `npm run install:local -- --extension-disabled`.
